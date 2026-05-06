@@ -384,6 +384,20 @@ body {
   color: #764ba2;
   font-weight: bold;
 }
+
+
+.math-keyboard {position: fixed;left: 0;right: 0;bottom: 0;background: #e6eeff;border-top: 3px solid #c8d8ff;padding: 10px;z-index: 1000;display:none;}
+.kb-grid {display: grid;grid-template-columns: repeat(6, minmax(44px, 1fr));gap: 8px;max-width: 900px;margin: 0 auto;}
+.kb-btn {min-height: 48px;border-radius: 10px;border: 2px solid #c5d4ef;font-size: 24px;font-weight: bold;transition: transform 0.08s ease;}
+.kb-btn:active {transform: scale(0.95);} 
+.kb-num {background: #fff;color:#1f2937;}
+.kb-op {background: #3f6fd1;color:#fff;border-color:#2d56ac;}
+.kb-eq {background: #ff8b3d;color:#fff;border-color:#db6f28;}
+.kb-fn {background: #7f8ba3;color:#fff;border-color:#657084;}
+.feedback.bounce {animation: bounce .35s;}
+@keyframes bounce {0%{transform:scale(1)}45%{transform:scale(1.08)}100%{transform:scale(1)}}
+@media (max-width: 600px) { body{padding-bottom:210px;} .mission-content{font-size:20px;} .formula-input{font-size:24px;min-height:52px;} }
+
 </style>
 </head>
 <body>
@@ -392,6 +406,7 @@ body {
   <div class="header">
     <div class="title">🎯 文字と式マスター</div>
     <div class="score-area">
+      <button class="submit-btn" id="soundToggle" onclick="toggleSound()" style="padding:8px 14px;font-size:14px;">🔊 効果音ON</button>
       <div class="score-item">
         <div class="score-label">スコア</div>
         <div class="score-value" id="score">0</div>
@@ -413,11 +428,17 @@ body {
   <div class="mission-card" id="missionCard"></div>
 </div>
 
+<div class="math-keyboard" id="mathKeyboard"><div class="kb-grid" id="kbGrid"></div></div>
+
 <script>
 // Web Audio API
+let soundEnabled = true;
+let currentInputId = null;
+let correctStreak = 0;
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 function playSound(frequency, duration, type = 'sine') {
+  if (!soundEnabled) return;
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
   
@@ -611,10 +632,28 @@ const missions = {
   ]
 };
 
+function randomizeMissions() {
+  missions[1][0].min = 0;
+  missions[1][0].max = 60;
+  missions[2][0].min = 0;
+  missions[2][0].max = 60;
+  const area = Math.floor(Math.random() * 40) + 30;
+  missions[3][2].description = `面積が${area}cm²の長方形で、縦がx cm、横がy cmです。`;
+  missions[3][2].correctAnswers = [`x×y=${area}`, `xy=${area}`, `y×x=${area}`, `x*y=${area}`];
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.getElementById('soundToggle').textContent = soundEnabled ? '🔊 効果音ON' : '🔈 効果音OFF';
+  saveGameState();
+}
+
 // 初期化
 function init() {
   loadGameState();
+  randomizeMissions();
   renderStepSelector();
+  setupMathKeyboard();
   renderBadges();
   loadMission();
   updateScoreDisplay();
@@ -642,7 +681,9 @@ function changeStep(stepId) {
   playClickSound();
   gameState.currentStep = stepId;
   gameState.currentMission = 0;
+  randomizeMissions();
   renderStepSelector();
+  setupMathKeyboard();
   loadMission();
 }
 
@@ -683,6 +724,11 @@ function renderMission(mission) {
   }
 
   card.innerHTML = html;
+  if (mission.type === 'input') {
+    setInputTarget('formulaInput');
+  } else {
+    hideMathKeyboard();
+  }
 }
 
 // インタラクティブ（1変数）
@@ -791,7 +837,8 @@ function checkSelect(index, isCorrect, explanation) {
   } else {
     buttons[index].classList.add('wrong');
     feedback.className = 'feedback wrong show';
-    feedback.textContent = '💭 おしい！もう一度考えてみよう';
+    correctStreak = 0;
+    feedback.textContent = '💭 おしい！ヒント: ' + explanation;
     playWrongSound();
   }
   
@@ -804,7 +851,7 @@ function renderInput(mission) {
     <div class="answer-area">
       <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">${mission.question}</p>
       <div class="input-area">
-        <input type="text" class="formula-input" id="formulaInput" placeholder="式を入力">
+        <input type="text" readonly inputmode="none" class="formula-input" id="formulaInput" placeholder="下のボタンで式を入力" onclick="setInputTarget('formulaInput')">
         <button class="submit-btn" onclick="checkInput(['${mission.correctAnswers.join("','")}'], '${mission.hint}')">
           答える
         </button>
@@ -828,7 +875,9 @@ function checkInput(correctAnswers, hint) {
   
   if (isCorrect) {
     feedback.className = 'feedback correct show';
-    feedback.textContent = '🎉 正解！完璧です！';
+    correctStreak++;
+    feedback.classList.add('bounce');
+    feedback.textContent = correctStreak >= 2 ? '🎉 正解！よくできた！⭐' : '🎉 正解！よくできた！';
     playCorrectSound();
     addScore(15);
     checkBadges();
@@ -836,6 +885,7 @@ function checkInput(correctAnswers, hint) {
     document.getElementById('nextBtn').classList.add('show');
   } else {
     feedback.className = 'feedback wrong show';
+    correctStreak = 0;
     feedback.textContent = '💭 もう一度考えてみよう。ヒント: ' + hint;
     playWrongSound();
   }
@@ -973,15 +1023,52 @@ function showCompletionMessage() {
   `;
 }
 
+
+
+function setupMathKeyboard() {
+  const keys = [
+    ['7','num'],['8','num'],['9','num'],['(','op'],[')','op'],['⌫','fn'],
+    ['4','num'],['5','num'],['6','num'],['+','op'],['−','op'],['C','fn'],
+    ['1','num'],['2','num'],['3','num'],['×','op'],['÷','op'],['x','op'],
+    ['0','num'],['.','num'],['*','op'],['=','eq']
+  ];
+  const grid = document.getElementById('kbGrid');
+  grid.innerHTML = keys.map(([k,t]) => `<button class="kb-btn ${t==='num'?'kb-num':t==='eq'?'kb-eq':t==='fn'?'kb-fn':'kb-op'}" onclick="pressMathKey('${k}')">${k}</button>`).join('');
+}
+
+function setInputTarget(inputId) {
+  currentInputId = inputId;
+  document.getElementById('mathKeyboard').style.display = 'block';
+}
+
+function hideMathKeyboard() {
+  document.getElementById('mathKeyboard').style.display = 'none';
+  currentInputId = null;
+}
+
+function pressMathKey(key) {
+  if (!currentInputId) return;
+  const input = document.getElementById(currentInputId);
+  if (!input || input.disabled) return;
+  playClickSound();
+  if (key === '⌫') input.value = input.value.slice(0, -1);
+  else if (key === 'C') input.value = '';
+  else input.value += key;
+}
+
 // ローカルストレージ
 function saveGameState() {
-  localStorage.setItem('mojiToShikiGame', JSON.stringify(gameState));
+  localStorage.setItem('mojiToShikiGame', JSON.stringify({...gameState, soundEnabled}));
 }
 
 function loadGameState() {
   const saved = localStorage.getItem('mojiToShikiGame');
   if (saved) {
-    gameState = JSON.parse(saved);
+    const data = JSON.parse(saved);
+    soundEnabled = data.soundEnabled !== undefined ? data.soundEnabled : true;
+    gameState = data;
+    const btn = document.getElementById('soundToggle');
+    if (btn) btn.textContent = soundEnabled ? '🔊 効果音ON' : '🔈 効果音OFF';
   }
 }
 
