@@ -5,163 +5,989 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>文字と式マスター</title>
 <style>
-:root {
-  --bg:#f4f7ff; --panel:#ffffff; --primary:#2c5fe8; --accent:#ff8a3d; --ok:#1f9d55; --ng:#d94841; --text:#1b2230;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;background:var(--bg);color:var(--text);padding:14px 14px 210px}
-.container{max-width:900px;margin:0 auto}
-.header,.panel{background:var(--panel);border-radius:18px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,.08);margin-bottom:14px}
-.header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.title{font-size:clamp(1.4rem,2.8vw,2rem);color:var(--primary);font-weight:800}
-.problem{font-size:clamp(1.5rem,4vw,2.2rem);text-align:center;line-height:1.5;margin:20px 0;font-weight:800}
-.stats{display:flex;gap:12px}
-.stat{min-width:80px;text-align:center}.stat small{display:block;color:#607085}.stat b{font-size:1.4rem;color:var(--primary)}
-.level-buttons{display:grid;grid-template-columns:repeat(2,minmax(120px,1fr));gap:8px}
-.level-btn{min-height:48px;border:2px solid var(--primary);border-radius:12px;background:#fff;font-weight:700;color:var(--primary)}
-.level-btn.active{background:var(--primary);color:#fff}
-.answer-box{font-size:2rem;border:3px solid #b7c8ff;border-radius:14px;padding:14px;min-height:72px;text-align:center;background:#fbfdff;letter-spacing:.02em}
-.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
-button{cursor:pointer}
-.btn{min-height:44px;border:none;border-radius:12px;padding:10px 16px;font-size:1rem;font-weight:700}
-.btn-main{background:var(--primary);color:#fff}.btn-main:active{transform:scale(.98)}
-.btn-alt{background:#eef2ff;color:var(--primary)}
-.feedback{margin-top:14px;padding:12px;border-radius:12px;font-size:1.15rem;text-align:center;display:none}
-.feedback.show{display:block}.feedback.ok{background:#def7e8;color:#0b6e3d}.feedback.ng{background:#ffe5e3;color:#9a241f}
-.hint{margin-top:10px;text-align:center;color:#44536a;font-weight:700;min-height:26px}
-.stars{text-align:center;font-size:1.6rem;min-height:30px;margin-top:8px}
-.bounce{animation:bounce .35s ease}
-@keyframes bounce{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
 
-.keyboard-wrap{position:fixed;left:0;right:0;bottom:0;background:#e9efff;border-top:2px solid #d2deff;padding:8px 10px 12px;z-index:10}
-.keyboard{max-width:960px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
-.key{min-height:48px;border:none;border-radius:12px;font-size:1.2rem;font-weight:800;transition:transform .08s}
-.key:active{transform:scale(.95)}
-.key.num{background:#fff;color:#24344d}.key.op{background:#2c5fe8;color:#fff}.key.eq{background:var(--accent);color:#fff}.key.util{background:#6f7d96;color:#fff}
-@media (max-width:700px){.keyboard{grid-template-columns:repeat(5,1fr)}body{padding-bottom:250px}}
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+  color: #333;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.score-area {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.score-item {
+  text-align: center;
+}
+
+.score-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.score-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #764ba2;
+}
+
+.step-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.step-btn {
+  background: white;
+  border: 3px solid #667eea;
+  border-radius: 15px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 16px;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.step-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.step-btn.active {
+  background: #667eea;
+  color: white;
+}
+
+.mission-card {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.mission-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #764ba2;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mission-content {
+  font-size: 18px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.formula-display {
+  background: #f0f4ff;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px 0;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.interactive-area {
+  background: #fff9e6;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.slider-container {
+  margin: 15px 0;
+}
+
+.slider-label {
+  font-size: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: #ddd;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #667eea;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #667eea;
+  cursor: pointer;
+  border: none;
+}
+
+.result-display {
+  background: #e8f5e9;
+  border-radius: 15px;
+  padding: 15px;
+  margin: 15px 0;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  color: #2e7d32;
+}
+
+.answer-area {
+  margin: 20px 0;
+}
+
+.answer-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.answer-btn {
+  background: white;
+  border: 2px solid #667eea;
+  border-radius: 10px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 16px;
+  text-align: left;
+}
+
+.answer-btn:hover {
+  background: #f0f4ff;
+  transform: translateY(-2px);
+}
+
+.answer-btn.correct {
+  background: #4caf50;
+  color: white;
+  border-color: #4caf50;
+}
+
+.answer-btn.wrong {
+  background: #ff6b6b;
+  color: white;
+  border-color: #ff6b6b;
+}
+
+.input-area {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.formula-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px;
+  font-size: 18px;
+  border: 2px solid #667eea;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.submit-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.submit-btn:hover {
+  background: #764ba2;
+  transform: translateY(-2px);
+}
+
+.feedback {
+  margin: 15px 0;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  display: none;
+}
+
+.feedback.show {
+  display: block;
+}
+
+.feedback.correct {
+  background: #c8e6c9;
+  color: #2e7d32;
+}
+
+.feedback.wrong {
+  background: #ffccbc;
+  color: #d84315;
+}
+
+.next-btn {
+  background: #764ba2;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 15px 40px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: none;
+  margin: 20px auto;
+}
+
+.next-btn.show {
+  display: block;
+}
+
+.next-btn:hover {
+  background: #667eea;
+  transform: scale(1.05);
+}
+
+.badge-area {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.badge-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #764ba2;
+  margin-bottom: 15px;
+}
+
+.badges {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #999;
+}
+
+.badge.earned {
+  background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+  color: white;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 22px;
+  }
+  
+  .score-area {
+    width: 100%;
+    justify-content: space-around;
+  }
+  
+  .mission-content {
+    font-size: 16px;
+  }
+  
+  .formula-display {
+    font-size: 20px;
+  }
+}
+
+.visual-demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.visual-item {
+  background: #667eea;
+  color: white;
+  border-radius: 10px;
+  padding: 15px 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.visual-operator {
+  font-size: 28px;
+  color: #764ba2;
+  font-weight: bold;
+}
 </style>
 </head>
 <body>
+
 <div class="container">
   <div class="header">
     <div class="title">🎯 文字と式マスター</div>
-    <div class="stats">
-      <div class="stat"><small>スコア</small><b id="score">0</b></div>
-      <div class="stat"><small>連続正解</small><b id="streak">0</b></div>
+    <div class="score-area">
+      <div class="score-item">
+        <div class="score-label">スコア</div>
+        <div class="score-value" id="score">0</div>
+      </div>
+      <div class="score-item">
+        <div class="score-label">レベル</div>
+        <div class="score-value" id="level">1</div>
+      </div>
     </div>
   </div>
 
-  <div class="panel">
-    <div class="level-buttons" id="levelButtons"></div>
-    <div class="problem" id="problemText"></div>
-    <div class="answer-box" id="answerBox" aria-label="式入力欄"></div>
-    <div class="row">
-      <button class="btn btn-main" id="checkBtn">こたえあわせ</button>
-      <button class="btn btn-alt" id="nextBtn">つぎのもんだい</button>
-    </div>
-    <div class="feedback" id="feedback"></div>
-    <div class="hint" id="hint"></div>
-    <div class="stars" id="stars"></div>
-  </div>
-</div>
+  <div class="step-selector" id="stepSelector"></div>
 
-<div class="keyboard-wrap" aria-label="算数キーボード">
-  <div class="keyboard" id="mathKeyboard"></div>
+  <div class="badge-area">
+    <div class="badge-title">🏅 獲得バッジ</div>
+    <div class="badges" id="badges"></div>
+  </div>
+
+  <div class="mission-card" id="missionCard"></div>
 </div>
 
 <script>
+// Web Audio API
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-function tone(f, d){const o=audioContext.createOscillator(),g=audioContext.createGain();o.connect(g);g.connect(audioContext.destination);o.frequency.value=f;g.gain.value=.18;o.start();g.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+d);o.stop(audioContext.currentTime+d);}
-function okSound(){tone(530,.08);setTimeout(()=>tone(660,.1),90);} function ngSound(){tone(220,.2);} function tapSound(){tone(420,.04);}
 
-const levels = {
+function playSound(frequency, duration, type = 'sine') {
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  oscillator.frequency.value = frequency;
+  oscillator.type = type;
+  
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+  
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + duration);
+}
+
+function playCorrectSound() {
+  playSound(523.25, 0.1);
+  setTimeout(() => playSound(659.25, 0.1), 100);
+  setTimeout(() => playSound(783.99, 0.2), 200);
+}
+
+function playWrongSound() {
+  playSound(200, 0.3, 'sawtooth');
+}
+
+function playClickSound() {
+  playSound(400, 0.05);
+}
+
+// ゲーム状態
+let gameState = {
+  score: 0,
+  level: 1,
+  currentStep: 1,
+  currentMission: 0,
+  badges: [],
+  answeredCorrect: 0
+};
+
+// バッジ定義
+const allBadges = [
+  { id: 'first', name: '初めての一歩', requirement: 1 },
+  { id: 'explorer', name: '式探検家', requirement: 5 },
+  { id: 'master', name: '式マスター', requirement: 10 },
+  { id: 'legend', name: '関係の達人', requirement: 20 }
+];
+
+// ステップ定義
+const steps = [
+  { id: 1, name: 'STEP1：□△を使った式', icon: '🔲' },
+  { id: 2, name: 'STEP2：x, yを使った式', icon: '✏️' },
+  { id: 3, name: 'STEP3：関係式', icon: '🔗' },
+  { id: 4, name: 'STEP4：代入して求める', icon: '🎯' }
+];
+
+// ミッション定義
+const missions = {
   1: [
-    { q:'2x + 3 = □', a:['7'], hint:'x=2 を入れると 2×2+3 です。' },
-    { q:'3x + 1 = □', a:['10'], hint:'x=3 を入れて考えよう。' },
-    { q:'4x - 5 = □', a:['3'], hint:'x=2 のとき 8-5 です。' }
+    {
+      title: '水そうミッション',
+      description: '水そうに38Lの水が入っています。さらに□Lの水を入れました。全体の水の量は△Lです。',
+      type: 'interactive',
+      formula: '38 + □ = △',
+      variable: 'box',
+      min: 0,
+      max: 50,
+      calculate: (x) => 38 + x,
+      hint: '最初の水 + 入れた水 = 全体の水'
+    },
+    {
+      title: '長方形ミッション',
+      description: '縦が□cm、横が△cmの長方形があります。面積は52cm²です。',
+      type: 'select',
+      question: '縦と横の関係を式に表すと？',
+      options: [
+        { text: '□ + △ = 52', correct: false },
+        { text: '□ × △ = 52', correct: true },
+        { text: '□ ÷ △ = 52', correct: false },
+        { text: '□ - △ = 52', correct: false }
+      ],
+      explanation: '面積は 縦 × 横 で求めます'
+    },
+    {
+      title: 'おにぎりミッション',
+      description: '□個のおにぎりを30人で分けます。1人分は△個です。',
+      type: 'input',
+      question: '□と△の関係を式に表しなさい。（例：□+△、□×△など）',
+      correctAnswers: ['□÷30=△', '□/30=△', '□÷30'],
+      hint: '全体 ÷ 人数 = 1人分'
+    }
   ],
   2: [
-    { q:'□x + 5 = 11', a:['2'], hint:'x=3 を入れると □×3+5=11。' },
-    { q:'2x + □ = 9', a:['3'], hint:'x=3 のとき 6+□=9。' },
-    { q:'(□ + 2) ÷ 2 = 4', a:['6'], hint:'両辺を2倍してから考えよう。' }
+    {
+      title: '水そうミッション Level 2',
+      description: '水そうに38Lの水が入っています。さらにx Lの水を入れました。全体の水の量はy Lです。',
+      type: 'interactive',
+      formula: '38 + x = y',
+      variable: 'x',
+      min: 0,
+      max: 50,
+      calculate: (x) => 38 + x,
+      hint: 'xとyの関係を見つけよう'
+    },
+    {
+      title: '本の重さミッション',
+      description: '同じ重さの本18冊を220gの箱に入れて送ります。1冊の重さをxgとします。',
+      type: 'select',
+      question: '全体の重さを式に表すと？',
+      options: [
+        { text: 'x + 18 + 220', correct: false },
+        { text: 'x × 18 + 220', correct: true },
+        { text: '(x + 220) × 18', correct: false },
+        { text: 'x × 18 - 220', correct: false }
+      ],
+      explanation: '(1冊の重さ × 冊数) + 箱の重さ'
+    },
+    {
+      title: '長方形ミッション Level 2',
+      description: '縦の長さがx cm、横の長さが14.8 cmの長方形があります。',
+      type: 'input',
+      question: '面積を式で表しなさい。（×は使わずに）',
+      correctAnswers: ['x×14.8', '14.8×x', '14.8x', 'x*14.8'],
+      hint: '面積 = 縦 × 横'
+    }
+  ],
+  3: [
+    {
+      title: '水そうとxとyの関係',
+      description: '38Lの水が入った水そうに、1分間にxLずつ水を入れます。y分後の全体の水の量をzLとします。',
+      type: 'interactive-xy',
+      formula: 'z = 38 + x × y',
+      variables: ['x', 'y'],
+      ranges: [[1, 10], [1, 20]],
+      calculate: (x, y) => 38 + x * y,
+      hint: '最初の量 + (1分間の量 × 時間)'
+    },
+    {
+      title: '正方形の周りの長さ',
+      description: '1辺がx cmの正方形があります。まわりの長さはy cmです。',
+      type: 'select',
+      question: 'xとyの関係を式に表すと？',
+      options: [
+        { text: 'x + 4 = y', correct: false },
+        { text: 'x × 4 = y', correct: true },
+        { text: 'x × x = y', correct: false },
+        { text: 'x ÷ 4 = y', correct: false }
+      ],
+      explanation: '正方形のまわりは、1辺 × 4'
+    },
+    {
+      title: '面積が52cm²の長方形',
+      description: '面積が52cm²の長方形で、縦がx cm、横がy cmです。',
+      type: 'input',
+      question: 'xとyの関係を式に表しなさい。',
+      correctAnswers: ['x×y=52', 'xy=52', 'y×x=52', 'x*y=52'],
+      hint: '縦 × 横 = 面積'
+    }
+  ],
+  4: [
+    {
+      title: '代入：水の量を求めよう',
+      description: '38 + x = y という関係式があります。',
+      type: 'substitution',
+      formula: '38 + x = y',
+      questions: [
+        { question: 'x = 12 のとき、y の値は？', x: 12, answer: 50 },
+        { question: 'y = 73 のとき、x の値は？', y: 73, answer: 35 }
+      ]
+    },
+    {
+      title: '代入：長方形の面積',
+      description: 'x × 4 = y という関係式があります。',
+      type: 'substitution',
+      formula: 'x × 4 = y',
+      questions: [
+        { question: 'x = 2.5 のとき、y の値は？', x: 2.5, answer: 10 },
+        { question: 'y = 28.6 のとき、x の値は？', y: 28.6, answer: 7.15 }
+      ]
+    },
+    {
+      title: '代入：1mの重さ',
+      description: '1mの重さがxgの鉛筆がymあり、全体の重さは4320gです。（x × y = 4320）',
+      type: 'substitution',
+      formula: 'x × y = 4320',
+      questions: [
+        { question: 'x = 180 のとき、y の値は？', x: 180, answer: 24 },
+        { question: 'y = 64 のとき、x の値は？', y: 64, answer: 67.5 }
+      ]
+    }
   ]
 };
 
-const praise = ['よくできた！','すごい！','その調子！'];
-let state = {level:1,index:0,score:0,streak:0,input:''};
-
-const keys = [
-  '7','8','9','x','(',')',
-  '4','5','6','+','−','×',
-  '1','2','3','*','÷','=',
-  '0','.','←','C'
-];
-
-function initKeyboard(){
-  const kb=document.getElementById('mathKeyboard');
-  kb.innerHTML = keys.map(k=>{
-    const cls = /\d|\./.test(k) ? 'num' : (k==='='?'eq': (k==='←'||k==='C'?'util':'op'));
-    return `<button class="key ${cls}" onclick="pressKey('${k}')">${k}</button>`;
-  }).join('');
+// 初期化
+function init() {
+  loadGameState();
+  renderStepSelector();
+  renderBadges();
+  loadMission();
+  updateScoreDisplay();
 }
 
-function renderLevels(){
-  const el=document.getElementById('levelButtons');
-  el.innerHTML=[1,2].map(l=>`<button class="level-btn ${state.level===l?'active':''}" onclick="switchLevel(${l})">レベル${l}</button>`).join('');
-}
-function switchLevel(l){tapSound();state.level=l;state.index=0;state.input='';state.streak=0;renderLevels();renderQuestion();}
-function currentQ(){return levels[state.level][state.index % levels[state.level].length];}
-
-function renderQuestion(){
-  document.getElementById('problemText').textContent=currentQ().q;
-  document.getElementById('answerBox').textContent=state.input || 'ここにしきが入るよ';
-  document.getElementById('score').textContent=state.score;
-  document.getElementById('streak').textContent=state.streak;
-  document.getElementById('hint').textContent='';
+// スコア表示更新
+function updateScoreDisplay() {
+  document.getElementById('score').textContent = gameState.score;
+  document.getElementById('level').textContent = gameState.level;
 }
 
-function normalize(s){return s.replace(/\s/g,'').replace(/−/g,'-').replace(/×/g,'*').replace(/÷/g,'/');}
-function pressKey(k){
-  tapSound();
-  if(k==='←') state.input = state.input.slice(0,-1);
-  else if(k==='C') state.input='';
-  else state.input += k;
-  document.getElementById('answerBox').textContent = state.input || 'ここにしきが入るよ';
+// ステップセレクター描画
+function renderStepSelector() {
+  const container = document.getElementById('stepSelector');
+  container.innerHTML = steps.map(step => `
+    <button class="step-btn ${gameState.currentStep === step.id ? 'active' : ''}" 
+            onclick="changeStep(${step.id})">
+      ${step.icon} ${step.name}
+    </button>
+  `).join('');
 }
 
-function showFeedback(ok,msg){
-  const fb=document.getElementById('feedback');
-  fb.className=`feedback show ${ok?'ok':'ng'} bounce`;
-  fb.textContent=msg;
+// ステップ変更
+function changeStep(stepId) {
+  playClickSound();
+  gameState.currentStep = stepId;
+  gameState.currentMission = 0;
+  renderStepSelector();
+  loadMission();
 }
 
-function checkAnswer(){
-  const ans = normalize(state.input);
-  const valid = currentQ().a.some(a=>ans===normalize(a));
-  if(valid){
-    okSound();
-    state.score += 10;
-    state.streak += 1;
-    const msg = `⭕ ${praise[Math.floor(Math.random()*praise.length)]}`;
-    showFeedback(true,msg);
-    if(state.streak>0 && state.streak%3===0){document.getElementById('stars').textContent='⭐️⭐️ 3れんぞくせいかい！';}
-    else {document.getElementById('stars').textContent='';}
-  } else {
-    ngSound();
-    state.streak = 0;
-    showFeedback(false,'△ おしい！');
-    document.getElementById('hint').textContent='ヒント: ' + currentQ().hint;
-    document.getElementById('stars').textContent='';
+// ミッション読み込み
+function loadMission() {
+  const stepMissions = missions[gameState.currentStep];
+  if (!stepMissions || gameState.currentMission >= stepMissions.length) {
+    showCompletionMessage();
+    return;
   }
-  renderQuestion();
-  document.getElementById('feedback').classList.add('show');
+  
+  const mission = stepMissions[gameState.currentMission];
+  renderMission(mission);
 }
 
-function nextQuestion(){tapSound();state.index++;state.input='';document.getElementById('feedback').className='feedback';renderQuestion();}
+// ミッション描画
+function renderMission(mission) {
+  const card = document.getElementById('missionCard');
+  let html = `
+    <div class="mission-title">
+      ${mission.title}
+    </div>
+    <div class="mission-content">
+      ${mission.description}
+    </div>
+  `;
 
-document.getElementById('checkBtn').addEventListener('click',checkAnswer);
-document.getElementById('nextBtn').addEventListener('click',nextQuestion);
-initKeyboard();renderLevels();renderQuestion();
+  if (mission.type === 'interactive') {
+    html += renderInteractive(mission);
+  } else if (mission.type === 'interactive-xy') {
+    html += renderInteractiveXY(mission);
+  } else if (mission.type === 'select') {
+    html += renderSelect(mission);
+  } else if (mission.type === 'input') {
+    html += renderInput(mission);
+  } else if (mission.type === 'substitution') {
+    html += renderSubstitution(mission);
+  }
+
+  card.innerHTML = html;
+}
+
+// インタラクティブ（1変数）
+function renderInteractive(mission) {
+  return `
+    <div class="formula-display">${mission.formula}</div>
+    <div class="interactive-area">
+      <div class="slider-container">
+        <div class="slider-label">
+          <span>${mission.variable}の値</span>
+          <span id="varValue">0</span>
+        </div>
+        <input type="range" class="slider" id="varSlider" 
+               min="${mission.min}" max="${mission.max}" value="0"
+               oninput="updateInteractive(${mission.min}, ${mission.max}, ${mission.calculate})">
+      </div>
+      <div class="result-display" id="resultDisplay">
+        結果 = <span id="resultValue">38</span>
+      </div>
+      <p style="color: #666; margin-top: 15px;">💡 ${mission.hint}</p>
+    </div>
+    <button class="next-btn show" onclick="nextMission()">次のミッションへ ▶</button>
+  `;
+}
+
+// インタラクティブ更新
+function updateInteractive(min, max, calcFunc) {
+  const value = parseInt(document.getElementById('varSlider').value);
+  document.getElementById('varValue').textContent = value;
+  document.getElementById('resultValue').textContent = calcFunc(value);
+}
+
+// インタラクティブ（2変数）
+function renderInteractiveXY(mission) {
+  return `
+    <div class="formula-display">${mission.formula}</div>
+    <div class="interactive-area">
+      <div class="slider-container">
+        <div class="slider-label">
+          <span>xの値（1分間の量）</span>
+          <span id="xValue">1</span>
+        </div>
+        <input type="range" class="slider" id="xSlider" 
+               min="${mission.ranges[0][0]}" max="${mission.ranges[0][1]}" value="1"
+               oninput="updateInteractiveXY()">
+      </div>
+      <div class="slider-container">
+        <div class="slider-label">
+          <span>yの値（時間）</span>
+          <span id="yValue">1</span>
+        </div>
+        <input type="range" class="slider" id="ySlider" 
+               min="${mission.ranges[1][0]}" max="${mission.ranges[1][1]}" value="1"
+               oninput="updateInteractiveXY()">
+      </div>
+      <div class="result-display" id="resultDisplay">
+        全体の水の量 = <span id="zValue">39</span> L
+      </div>
+      <p style="color: #666; margin-top: 15px;">💡 ${mission.hint}</p>
+    </div>
+    <button class="next-btn show" onclick="nextMission()">次のミッションへ ▶</button>
+  `;
+}
+
+// 2変数インタラクティブ更新
+function updateInteractiveXY() {
+  const x = parseInt(document.getElementById('xSlider').value);
+  const y = parseInt(document.getElementById('ySlider').value);
+  document.getElementById('xValue').textContent = x;
+  document.getElementById('yValue').textContent = y;
+  document.getElementById('zValue').textContent = 38 + x * y;
+}
+
+// 選択式
+function renderSelect(mission) {
+  return `
+    <div class="answer-area">
+      <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">${mission.question}</p>
+      <div class="answer-options">
+        ${mission.options.map((opt, i) => `
+          <button class="answer-btn" onclick="checkSelect(${i}, ${opt.correct}, '${mission.explanation}')">
+            ${opt.text}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn" onclick="nextMission()">次のミッションへ ▶</button>
+  `;
+}
+
+// 選択チェック
+function checkSelect(index, isCorrect, explanation) {
+  const buttons = document.querySelectorAll('.answer-btn');
+  const feedback = document.getElementById('feedback');
+  
+  buttons.forEach(btn => btn.style.pointerEvents = 'none');
+  
+  if (isCorrect) {
+    buttons[index].classList.add('correct');
+    feedback.className = 'feedback correct show';
+    feedback.textContent = '🎉 正解！ナイス！ ' + explanation;
+    playCorrectSound();
+    addScore(10);
+    checkBadges();
+  } else {
+    buttons[index].classList.add('wrong');
+    feedback.className = 'feedback wrong show';
+    feedback.textContent = '💭 おしい！もう一度考えてみよう';
+    playWrongSound();
+  }
+  
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+// 入力式
+function renderInput(mission) {
+  return `
+    <div class="answer-area">
+      <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">${mission.question}</p>
+      <div class="input-area">
+        <input type="text" class="formula-input" id="formulaInput" placeholder="式を入力">
+        <button class="submit-btn" onclick="checkInput(['${mission.correctAnswers.join("','")}'], '${mission.hint}')">
+          答える
+        </button>
+      </div>
+      <p style="color: #666; margin-top: 10px;">💡 ヒント: ${mission.hint}</p>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn" onclick="nextMission()">次のミッションへ ▶</button>
+  `;
+}
+
+// 入力チェック
+function checkInput(correctAnswers, hint) {
+  const input = document.getElementById('formulaInput');
+  const userAnswer = input.value.replace(/\s/g, '');
+  const feedback = document.getElementById('feedback');
+  
+  const isCorrect = correctAnswers.some(ans => 
+    userAnswer.toLowerCase() === ans.toLowerCase().replace(/\s/g, '')
+  );
+  
+  if (isCorrect) {
+    feedback.className = 'feedback correct show';
+    feedback.textContent = '🎉 正解！完璧です！';
+    playCorrectSound();
+    addScore(15);
+    checkBadges();
+    input.disabled = true;
+    document.getElementById('nextBtn').classList.add('show');
+  } else {
+    feedback.className = 'feedback wrong show';
+    feedback.textContent = '💭 もう一度考えてみよう。ヒント: ' + hint;
+    playWrongSound();
+  }
+}
+
+// 代入問題
+function renderSubstitution(mission) {
+  return `
+    <div class="formula-display">${mission.formula}</div>
+    <div class="answer-area">
+      ${mission.questions.map((q, i) => `
+        <div style="background: #f5f5f5; padding: 15px; border-radius: 10px; margin: 10px 0;">
+          <p style="font-weight: bold; margin-bottom: 10px;">問${i + 1}: ${q.question}</p>
+          <div class="input-area">
+            <input type="number" step="0.01" class="formula-input" id="subInput${i}" 
+                   placeholder="答えを入力" style="max-width: 200px;">
+            <button class="submit-btn" onclick="checkSubstitution(${i}, ${q.answer})">
+              答える
+            </button>
+          </div>
+          <div class="feedback" id="subFeedback${i}"></div>
+        </div>
+      `).join('')}
+    </div>
+    <button class="next-btn" id="nextBtn" onclick="nextMission()">次のミッションへ ▶</button>
+  `;
+}
+
+// 代入チェック
+let substitutionCorrect = 0;
+function checkSubstitution(index, correctAnswer) {
+  const input = document.getElementById(`subInput${index}`);
+  const userAnswer = parseFloat(input.value);
+  const feedback = document.getElementById(`subFeedback${index}`);
+  
+  if (Math.abs(userAnswer - correctAnswer) < 0.01) {
+    feedback.className = 'feedback correct show';
+    feedback.textContent = '🎉 正解！';
+    playCorrectSound();
+    addScore(10);
+    input.disabled = true;
+    substitutionCorrect++;
+    
+    const stepMissions = missions[gameState.currentStep];
+    const mission = stepMissions[gameState.currentMission];
+    if (substitutionCorrect >= mission.questions.length) {
+      checkBadges();
+      document.getElementById('nextBtn').classList.add('show');
+      substitutionCorrect = 0;
+    }
+  } else {
+    feedback.className = 'feedback wrong show';
+    feedback.textContent = '💭 計算をもう一度確認してみよう';
+    playWrongSound();
+  }
+}
+
+// 次のミッション
+function nextMission() {
+  playClickSound();
+  gameState.currentMission++;
+  loadMission();
+  saveGameState();
+}
+
+// スコア追加
+function addScore(points) {
+  gameState.score += points;
+  gameState.answeredCorrect++;
+  
+  // レベルアップ判定
+  const newLevel = Math.floor(gameState.score / 50) + 1;
+  if (newLevel > gameState.level) {
+    gameState.level = newLevel;
+    showLevelUp();
+  }
+  
+  updateScoreDisplay();
+  saveGameState();
+}
+
+// レベルアップ表示
+function showLevelUp() {
+  playCorrectSound();
+  setTimeout(() => playCorrectSound(), 200);
+}
+
+// バッジチェック
+function checkBadges() {
+  allBadges.forEach(badge => {
+    if (!gameState.badges.includes(badge.id) && 
+        gameState.answeredCorrect >= badge.requirement) {
+      gameState.badges.push(badge.id);
+      showBadgeEarned(badge.name);
+      renderBadges();
+    }
+  });
+}
+
+// バッジ獲得表示
+function showBadgeEarned(name) {
+  playCorrectSound();
+  setTimeout(() => {
+    alert(`🏅 バッジ獲得！\n${name}`);
+  }, 300);
+}
+
+// バッジ描画
+function renderBadges() {
+  const container = document.getElementById('badges');
+  container.innerHTML = allBadges.map(badge => `
+    <div class="badge ${gameState.badges.includes(badge.id) ? 'earned' : ''}">
+      ${badge.name}
+    </div>
+  `).join('');
+}
+
+// 完了メッセージ
+function showCompletionMessage() {
+  const card = document.getElementById('missionCard');
+  card.innerHTML = `
+    <div style="text-align: center; padding: 40px;">
+      <div style="font-size: 48px; margin-bottom: 20px;">🎊</div>
+      <div style="font-size: 24px; font-weight: bold; color: #764ba2; margin-bottom: 15px;">
+        このステップのミッション完了！
+      </div>
+      <p style="font-size: 18px; color: #666; margin-bottom: 30px;">
+        次のステップに挑戦してみよう！
+      </p>
+      <button class="submit-btn" onclick="changeStep(${gameState.currentStep % 4 + 1})" 
+              style="font-size: 18px; padding: 15px 40px;">
+        次のステップへ ▶
+      </button>
+    </div>
+  `;
+}
+
+// ローカルストレージ
+function saveGameState() {
+  localStorage.setItem('mojiToShikiGame', JSON.stringify(gameState));
+}
+
+function loadGameState() {
+  const saved = localStorage.getItem('mojiToShikiGame');
+  if (saved) {
+    gameState = JSON.parse(saved);
+  }
+}
+
+// 起動
+init();
 </script>
+
 </body>
 </html>
