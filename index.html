@@ -642,6 +642,65 @@ function randomizeMissions() {
   missions[3][2].correctAnswers = [`x×y=${area}`, `xy=${area}`, `y×x=${area}`, `x*y=${area}`];
 }
 
+
+// 追加問題を大量生成
+function generateExtraMissions() {
+  const extras = {1: [], 2: [], 3: [], 4: []};
+
+  for (let i = 0; i < 20; i++) {
+    const unit = Math.floor(Math.random() * 8) + 2;
+    const people = (Math.floor(Math.random() * 8) + 2) * 5;
+    extras[1].push({
+      title: `わけ算トレーニング ${i + 1}` ,
+      description: `□個のお菓子を${people}人で同じ数ずつ分けます。1人分を△個とします。`,
+      type: 'input',
+      question: '□と△の関係を式で表そう',
+      correctAnswers: [`□÷${people}=△`, `□/${people}=△`, `△=□÷${people}`],
+      hint: '全体 ÷ 人数 = 1人分'
+    });
+
+    extras[2].push({
+      title: `かけ算ミッション ${i + 1}`,
+      description: `1個 x 円のパンを${unit}個買います。合計金額を y 円とします。`,
+      type: 'input',
+      question: 'xとyの関係を式で表しなさい',
+      correctAnswers: [`x×${unit}=y`, `${unit}×x=y`, `y=x×${unit}`, `y=${unit}×x`, `x*${unit}=y`, `${unit}*x=y`],
+      hint: '1個のねだん × 個数 = 合計'
+    });
+
+    const area = (Math.floor(Math.random() * 15) + 6) * 4;
+    extras[3].push({
+      title: `関係式チャレンジ ${i + 1}`,
+      description: `面積が${area}cm²の長方形で、たてがx cm、よこがy cmです。`,
+      type: 'input',
+      question: 'xとyの関係を式で表そう',
+      correctAnswers: [`x×y=${area}`, `y×x=${area}`, `x*y=${area}`, `xy=${area}`],
+      hint: 'たて × よこ = 面積'
+    });
+
+    const add = Math.floor(Math.random() * 20) + 5;
+    const xVal = Math.floor(Math.random() * 20) + 1;
+    extras[4].push({
+      title: `代入チャレンジ ${i + 1}`,
+      description: `x + ${add} = y という関係式があります。`,
+      type: 'substitution',
+      formula: `x + ${add} = y`,
+      questions: [
+        { question: `x = ${xVal} のとき、yの値は？`, x: xVal, answer: xVal + add },
+        { question: `y = ${xVal + add + 10} のとき、xの値は？`, y: xVal + add + 10, answer: xVal + 10 }
+      ]
+    });
+  }
+
+  Object.keys(extras).forEach(k => {
+    missions[k] = shuffleArray([...missions[k], ...extras[k]]);
+  });
+}
+
+function shuffleArray(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
 function toggleSound() {
   soundEnabled = !soundEnabled;
   document.getElementById('soundToggle').textContent = soundEnabled ? '🔊 効果音ON' : '🔈 効果音OFF';
@@ -652,6 +711,7 @@ function toggleSound() {
 function init() {
   loadGameState();
   randomizeMissions();
+  generateExtraMissions();
   renderStepSelector();
   setupMathKeyboard();
   renderBadges();
