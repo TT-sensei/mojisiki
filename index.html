@@ -36,7 +36,7 @@
       const n = normalizeBasic(str);
       const [left, right] = n.split('=');
       if (right === undefined) return canonicalSide(n);
-      return `${canonicalSide(left)}=${canonicalSide(right)}`;
+      return [canonicalSide(left), canonicalSide(right)].sort().join('=');
     };
 
     const valueQuestions = [
