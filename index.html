@@ -15,6 +15,15 @@
   <script type="text/babel">
     const { useState, useMemo, useRef } = React;
 
+    const shuffle = (arr) => {
+      const next = [...arr];
+      for (let i = next.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [next[i], next[j]] = [next[j], next[i]];
+      }
+      return next;
+    };
+
     const normalizeBasic = (str) => str.replace(/\s+/g, '').replace(/＝/g, '=').replace(/÷/g, '/').replace(/×/g, '*');
     const canonicalSide = (side) =>
       side
@@ -84,6 +93,29 @@
       { id: 'b15', text: 'はじめに 70 枚あり、毎日 x 枚ずつ使う。1日後の残りを y 枚。', answer: 'y = 70 - x', note: '最初から使った分を引く。' }
     ];
 
+    const titleRanks = [
+      'ひらがなのたね',
+      'カタカナのこだま',
+      '数字のひよこ',
+      'たし算ルーキー',
+      'ひき算ナビゲーター',
+      'かけ算ブースター',
+      'わり算ハーモニー',
+      '文字式スプラウト',
+      'イコール・ウォーカー',
+      '式よみスターター',
+      '変数トラベラー',
+      '計算コンダクター',
+      '文字と式レンジャー',
+      '方程式ハンター',
+      '式変形クラフター',
+      '数式シンフォニスト',
+      '代数アーキテクト',
+      '等式グランドマスター',
+      '記号のレジェンド',
+      '文字と式エンペラー'
+    ];
+
     const paletteGroups = {
       '数字': ['7','8','9','4','5','6','1','2','3','0','.'],
       '文字': ['x','y','a','b','c','n'],
@@ -96,6 +128,9 @@
       const [input, setInput] = useState('');
       const [feedback, setFeedback] = useState('');
       const [score, setScore] = useState(0);
+      const [valuePool, setValuePool] = useState(() => shuffle(valueQuestions));
+      const [readingPool, setReadingPool] = useState(() => shuffle(readingQuestions));
+      const [buildPool, setBuildPool] = useState(() => shuffle(buildQuestions));
       const [celebrate, setCelebrate] = useState(false);
       const audioCtxRef = useRef(null);
 
@@ -121,13 +156,25 @@
       };
 
       const current = useMemo(() => {
-        if (mode === 'value') return valueQuestions[index % valueQuestions.length];
-        if (mode === 'reading') return readingQuestions[index % readingQuestions.length];
-        if (mode === 'build') return buildQuestions[index % buildQuestions.length];
+        if (mode === 'value') return valuePool[index % valuePool.length];
+        if (mode === 'reading') return readingPool[index % readingPool.length];
+        if (mode === 'build') return buildPool[index % buildPool.length];
         return null;
-      }, [mode, index]);
+      }, [mode, index, valuePool, readingPool, buildPool]);
 
-      const resetRound = (nextMode) => { setMode(nextMode); setIndex(0); setInput(''); setFeedback(''); beep(520, 0.05); };
+      const currentTitle = titleRanks[Math.min(Math.floor(score / 100), titleRanks.length - 1)];
+      const pointsToNextTitle = 100 - (score % 100);
+
+      const resetRound = (nextMode) => {
+        if (nextMode === 'value') setValuePool(shuffle(valueQuestions));
+        if (nextMode === 'reading') setReadingPool(shuffle(readingQuestions));
+        if (nextMode === 'build') setBuildPool(shuffle(buildQuestions));
+        setMode(nextMode);
+        setIndex(0);
+        setInput('');
+        setFeedback('');
+        beep(520, 0.05);
+      };
       const onPalette = (key) => {
         beep(300, 0.03);
         if (key === '←') return setInput((v) => v.slice(0, -1));
@@ -162,6 +209,7 @@
             <h1 className="text-2xl md:text-3xl font-black">🎈 文字と式パーク（小6）</h1>
             <p className="text-sm md:text-base mt-1">数字・文字・式を分けて入力！音つきで楽しく練習！</p>
             <p className="mt-2 font-bold">スコア: {score} pt</p>
+            <p className="font-semibold">称号: {currentTitle}（次の称号まで {pointsToNextTitle} pt）</p>
           </header>
 
           {mode === 'home' && <main className="p-5 md:p-8 space-y-4">
