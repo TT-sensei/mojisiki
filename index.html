@@ -3,100 +3,171 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>文字と式マスター</title>
+  <title>文字と式パーク（小6）</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
-<body class="bg-slate-100">
+<body class="bg-sky-50">
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState, useEffect, useCallback } = React;
-
-    const getLevelInfo = (score) => {
-      const level = Math.floor(score / 100) + 1;
-      let title = '見習い';
-      if (level >= 15) title = '伝説の神マスター👑';
-      else if (level >= 10) title = '数学勇者🗡️';
-      else if (level >= 7) title = '式プロフェッサー🎓';
-      else if (level >= 4) title = '式マスター✨';
-      else if (level >= 2) title = 'かけだし計算士🔰';
-      return { level, title };
-    };
+    const { useState, useMemo } = React;
 
     const normalize = (str) =>
-      str.replace(/\s+/g, '').replace(/×/g, '*').replace(/÷/g, '/').replace(/[()]/g, '')
-        .replace(/(\d)([a-zA-Z□△])/g, '$1*$2').replace(/([a-zA-Z□△])(\d)/g, '$1*$2');
+      str
+        .replace(/\s+/g, '')
+        .replace(/×/g, '*')
+        .replace(/÷/g, '/')
+        .replace(/＝/g, '=')
+        .replace(/\(\)/g, '')
+        .replace(/(\d)([a-zA-Z])/g, '$1*$2')
+        .replace(/([a-zA-Z])(\d)/g, '$1*$2');
 
-    const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
-
-    // 既存問題を最大限活用
-    const formulaQuestions = [
-      { id:'f1', text:'水そうに38Lの水が入っています。さらに x Lの水を入れました。全体を y L とします。x と y の関係式は？', answers:['38+x=y','y=38+x'] },
-      { id:'f2', text:'同じ重さの本18冊を220gの箱に入れて送ります。1冊の重さを x g、全体を y g とします。式は？', answers:['x*18+220=y','18*x+220=y','y=x*18+220','y=18*x+220'] },
-      { id:'f3', text:'縦が x cm、横が14.8 cmの長方形の面積を y cm²とします。式は？', answers:['x*14.8=y','14.8*x=y','y=x*14.8','y=14.8*x'] },
-      { id:'f4', text:'1辺が x cmの正方形のまわりの長さを y cmとします。式は？', answers:['x*4=y','4*x=y','y=x*4','y=4*x'] },
-      { id:'f5', text:'面積が52cm²の長方形で、縦が x cm、横が y cmです。式は？', answers:['x*y=52','y*x=52'] }
+    const valueQuestions = [
+      { id: 'v1', text: 'y = x + 5 のとき、x = 3 なら y は？', answer: '8', note: '3 + 5 = 8' },
+      { id: 'v2', text: 'y = 2x のとき、x = 4 なら y は？', answer: '8', note: '2×4 = 8' },
+      { id: 'v3', text: 'y = x ÷ 2 のとき、x = 10 なら y は？', answer: '5', note: '10÷2 = 5' },
+      { id: 'v4', text: 'y = x + 0.5 のとき、x = 1.2 なら y は？', answer: '1.7', note: '1.2 + 0.5 = 1.7' },
+      { id: 'v5', text: 'y = x + 1/2 のとき、x = 3/2 なら y は？', answer: '2', note: '3/2 + 1/2 = 4/2 = 2' }
     ];
 
-    const solveXQuestions = [
-      { id:'s1', text:'38 + x = 73', answer:'35', explanation:'x = 73 - 38 = 35' },
-      { id:'s2', text:'x × 4 = 28.6', answer:'7.15', explanation:'x = 28.6 ÷ 4 = 7.15' },
-      { id:'s3', text:'x × 18 + 220 = 940', answer:'40', explanation:'x×18=720 → x=40' },
-      { id:'s4', text:'x ÷ 30 = 3', answer:'90', explanation:'x = 3 × 30 = 90' }
-    ];
-
-    const missionQuestions = [
+    const readingQuestions = [
       {
-        id:'m1', story:'🏫 1本 x 円のジュースを30本買います。合計を y 円とします。',
-        step1:{ text:'xとyの関係式を作ろう', answers:['x*30=y','30*x=y','y=x*30','y=30*x'], type:'formula' },
-        step2:{ text:'x=120 のとき y は？', answer:'3600', type:'value', explanation:'120×30=3600' }
+        id: 'r1',
+        text: '式  y = 120 + 30x  が表す場面として正しいものは？',
+        choices: ['1本30円のえんぴつをx本買い、はじめに120円ある。のこりをy円とする', 'はじめに120円あり、1本30円のえんぴつをx本買ったあとの合計金額をy円とする', '1本120円のえんぴつを30本買い、合計をy円とする'],
+        answer: 'はじめに120円あり、1本30円のえんぴつをx本買ったあとの合計金額をy円とする',
+        note: '120に、30ずつふえる分(30x)を足している。'
       },
       {
-        id:'m2', story:'📦 1冊 x g の本18冊と、箱220g。全体を y g とします。',
-        step1:{ text:'xとyの関係式を作ろう', answers:['x*18+220=y','18*x+220=y','y=x*18+220','y=18*x+220'], type:'formula' },
-        step2:{ text:'x=40 のとき y は？', answer:'940', type:'value', explanation:'40×18+220=940' }
+        id: 'r2',
+        text: '長方形の面積を表す式  S = 6x  がある。xは何を表す？',
+        choices: ['たてが6cm、よこがxcmのときの面積', 'まわりの長さが6xcmのときの面積', '6cm²の図形をxこ集めた数'],
+        answer: 'たてが6cm、よこがxcmのときの面積',
+        note: '面積は たて×よこ。6×x なので長方形の面積。'
       }
     ];
 
-    function App(){
-      const [screen,setScreen]=useState('home'); const [score,setScore]=useState(0);
-      const [currentQ,setCurrentQ]=useState(null); const [userAnswer,setUserAnswer]=useState('');
-      const [feedback,setFeedback]=useState(null); const [hintMsg,setHintMsg]=useState('');
-      const [qQueue,setQQueue]=useState([]); const [missionPhase,setMissionPhase]=useState(1);
-      const {level,title}=getLevelInfo(score);
+    const palette = ['7','8','9','+','-','x','y','4','5','6','×','÷','=','1','2','3','(',')','0','.','/','←','クリア'];
 
-      const startMode=useCallback((mode)=>{ setScreen(mode); if(mode==='learn') return;
-        const list=mode==='formula'?formulaQuestions:mode==='solve_x'?solveXQuestions:missionQuestions;
-        const s=shuffleArray(list); setCurrentQ(s[0]); setQQueue(s.slice(1)); setMissionPhase(1); setUserAnswer(''); setFeedback(null); setHintMsg('');
-      },[]);
-      const nextQ=()=>{ const list=screen==='formula'?formulaQuestions:screen==='solve_x'?solveXQuestions:missionQuestions; const q=qQueue.length?qQueue:shuffleArray(list); setCurrentQ(q[0]); setQQueue(q.slice(1)); setMissionPhase(1); setUserAnswer(''); setFeedback(null); setHintMsg(''); };
-      const check=()=>{ if(!userAnswer||feedback) return; const norm=normalize(userAnswer); let ok=false,ans='';
-        if(screen==='formula'){ ok=currentQ.answers.some(a=>normalize(a)===norm); }
-        else if(screen==='solve_x'){ ok=norm===currentQ.answer; ans=currentQ.answer; }
-        else { const step=missionPhase===1?currentQ.step1:currentQ.step2; if(step.type==='formula') ok=step.answers.some(a=>normalize(a)===norm); else {ok=norm===step.answer; ans=step.answer;} }
-        if(ok){ setScore(s=>s+10); if(screen==='mission'&&missionPhase===1){setFeedback('correct'); setTimeout(()=>{setMissionPhase(2); setFeedback(null); setUserAnswer('');},800);} else {setFeedback('correct'); setTimeout(nextQ,1000);} }
-        else { setFeedback('incorrect'); setHintMsg(ans?`正解: ${ans}`:'式の形を見直そう'); }
+    function App() {
+      const [mode, setMode] = useState('home');
+      const [index, setIndex] = useState(0);
+      const [input, setInput] = useState('');
+      const [feedback, setFeedback] = useState('');
+      const [score, setScore] = useState(0);
+
+      const current = useMemo(() => {
+        if (mode === 'value') return valueQuestions[index % valueQuestions.length];
+        if (mode === 'reading') return readingQuestions[index % readingQuestions.length];
+        return null;
+      }, [mode, index]);
+
+      const resetRound = (nextMode) => {
+        setMode(nextMode);
+        setIndex(0);
+        setInput('');
+        setFeedback('');
       };
 
-      useEffect(()=>{lucide.createIcons();});
+      const onPalette = (key) => {
+        if (key === '←') return setInput((v) => v.slice(0, -1));
+        if (key === 'クリア') return setInput('');
+        setInput((v) => v + key);
+      };
 
-      return <div className="min-h-screen p-3 md:p-6 font-sans"><div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
-        <div className="p-4 border-b flex justify-between items-center"><div className="font-black text-xl text-indigo-600">文字と式マスター</div><div className="text-sm">Lv.{level} {title} / {score}pt</div></div>
-        {screen==='home' && <div className="p-6 grid md:grid-cols-2 gap-3">{['learn','formula','solve_x','mission'].map(m=><button key={m} className="p-4 rounded-xl bg-indigo-500 text-white font-bold" onClick={()=>startMode(m)}>{m}</button>)}</div>}
-        {screen==='learn' && <div className="p-6"><p>学習モード：文字を使った式、等式、xの逆算、代入を学ぼう。</p><button className="mt-4 px-4 py-2 bg-gray-800 text-white rounded" onClick={()=>setScreen('home')}>ホームへ</button></div>}
-        {(screen==='formula'||screen==='solve_x'||screen==='mission')&&currentQ&&<div className="p-5 space-y-4">
-          <button onClick={()=>setScreen('home')} className="text-sm text-indigo-600">← ホーム</button>
-          <div className="p-4 bg-slate-50 rounded-xl">{screen==='mission'?<><div className="text-sm mb-2">{currentQ.story}</div><div>{missionPhase===1?currentQ.step1.text:currentQ.step2.text}</div></>:currentQ.text}</div>
-          <input className="w-full border p-3 rounded-xl text-xl" value={userAnswer} onChange={e=>setUserAnswer(e.target.value)} placeholder="答えを入力"/>
-          <button className="w-full p-3 bg-indigo-600 text-white rounded-xl" onClick={check}>こたえる</button>
-          {feedback==='incorrect'&&<div className="p-3 bg-red-50 rounded-xl text-red-700">おしい！ {hintMsg}</div>}
-          {feedback==='correct'&&<div className="p-3 bg-green-50 rounded-xl text-green-700">せいかい！ +10pt</div>}
-        </div>}
-      </div></div>
+      const checkAnswer = () => {
+        if (!current) return;
+        let ok = false;
+        if (mode === 'value') {
+          ok = normalize(input) === normalize(current.answer);
+        }
+        if (mode === 'reading') {
+          ok = input === current.answer;
+        }
+
+        if (ok) {
+          setScore((s) => s + 10);
+          setFeedback(`せいかい！ ${current.note}`);
+        } else {
+          setFeedback(`おしい！ 正解: ${current.answer} / ${current.note}`);
+        }
+      };
+
+      const nextQuestion = () => {
+        setIndex((i) => i + 1);
+        setInput('');
+        setFeedback('');
+      };
+
+      return (
+        <div className="min-h-screen p-3 md:p-6 font-sans">
+          <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-sky-200">
+            <header className="p-4 md:p-6 bg-gradient-to-r from-cyan-400 to-indigo-500 text-white">
+              <h1 className="text-2xl md:text-3xl font-black">🎈 文字と式パーク（小6）</h1>
+              <p className="text-sm md:text-base mt-1">タブレットで楽しく「文字に数をあてはめる」「式の意味を読む」を練習！</p>
+              <p className="mt-2 font-bold">スコア: {score} pt</p>
+            </header>
+
+            {mode === 'home' && (
+              <main className="p-5 md:p-8 space-y-4">
+                <section className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4">
+                  <h2 className="font-bold text-lg">学習のポイント</h2>
+                  <ul className="list-disc pl-5 mt-2 space-y-1 text-sm md:text-base">
+                    <li>文字 x に数をあてはめて、対応する y の値を求めよう。</li>
+                    <li>整数だけでなく、小数・分数も使ってみよう。</li>
+                    <li>「xの値」「yの値」という言い方に慣れよう。</li>
+                    <li>式がどんな場面・図形を表すかを言葉で説明しよう。</li>
+                  </ul>
+                </section>
+
+                <div className="grid md:grid-cols-2 gap-3">
+                  <button className="p-4 rounded-2xl bg-cyan-500 text-white font-bold text-lg" onClick={() => resetRound('value')}>① 値をもとめる練習</button>
+                  <button className="p-4 rounded-2xl bg-indigo-500 text-white font-bold text-lg" onClick={() => resetRound('reading')}>② 式の意味を読む練習</button>
+                </div>
+              </main>
+            )}
+
+            {(mode === 'value' || mode === 'reading') && current && (
+              <main className="p-5 md:p-8 space-y-4">
+                <button className="text-sm text-indigo-600" onClick={() => setMode('home')}>← ホームへ</button>
+                <div className="bg-slate-50 rounded-2xl p-4 border">
+                  <p className="font-bold">もんだい {index + 1}</p>
+                  <p className="mt-2 text-lg">{current.text}</p>
+                </div>
+
+                {mode === 'reading' ? (
+                  <div className="space-y-2">
+                    {current.choices.map((choice) => (
+                      <button key={choice} className={`w-full text-left p-3 rounded-xl border ${input===choice ? 'bg-indigo-100 border-indigo-400' : 'bg-white'}`} onClick={() => setInput(choice)}>
+                        {choice}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <>
+                    <input className="w-full border-2 border-sky-200 p-3 rounded-xl text-2xl" value={input} onChange={(e) => setInput(e.target.value)} placeholder="こたえを入力" />
+                    <div className="grid grid-cols-6 gap-2">
+                      {palette.map((key) => (
+                        <button key={key} className="p-3 rounded-xl bg-sky-100 font-bold" onClick={() => onPalette(key)}>{key}</button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                <div className="grid grid-cols-2 gap-3">
+                  <button className="p-3 rounded-xl bg-emerald-500 text-white font-bold" onClick={checkAnswer}>こたえあわせ</button>
+                  <button className="p-3 rounded-xl bg-gray-700 text-white font-bold" onClick={nextQuestion}>つぎの問題</button>
+                </div>
+
+                {feedback && <div className={`p-3 rounded-xl ${feedback.startsWith('せいかい') ? 'bg-green-50 text-green-700' : 'bg-rose-50 text-rose-700'}`}>{feedback}</div>}
+              </main>
+            )}
+          </div>
+        </div>
+      );
     }
 
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
