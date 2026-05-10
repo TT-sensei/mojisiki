@@ -34,15 +34,18 @@
       { id: 'v1', text: 'y = x + 5 のとき、x = 3 なら y は？', answer: '8', note: '3 + 5 = 8' },
       { id: 'v2', text: 'y = 2 × x のとき、x = 4 なら y は？', answer: '8', note: '2 × 4 = 8' },
       { id: 'v3', text: 'y = x ÷ 2 のとき、x = 10 なら y は？', answer: '5', note: '10 ÷ 2 = 5' },
-      { id: 'v4', text: 'y = x + 0.5 のとき、x = 1.2 なら y は？', answer: '1.7', note: '1.2 + 0.5 = 1.7' },
-      { id: 'v5', text: 'y = x + 1 ÷ 2 のとき、x = 3 ÷ 2 なら y は？', answer: '2', note: '3 ÷ 2 + 1 ÷ 2 = 2' },
+      { id: 'v4', text: 'y = x + 7 のとき、x = 9 なら y は？', answer: '16', note: '9 + 7 = 16' },
+      { id: 'v5', text: 'y = x - 4 のとき、x = 13 なら y は？', answer: '9', note: '13 - 4 = 9' },
       { id: 'v6', text: 'a = 3 × n + 1 のとき、n = 5 なら a は？', answer: '16', note: '3 × 5 + 1 = 16' },
       { id: 'v7', text: 'b = 20 - x のとき、x = 7 なら b は？', answer: '13', note: '20 - 7 = 13' },
       { id: 'v8', text: 'y = 4 × x のとき、x = 6 なら y は？', answer: '24', note: '4 × 6 = 24' },
       { id: 'v9', text: 'y = x ÷ 5 のとき、x = 45 なら y は？', answer: '9', note: '45 ÷ 5 = 9' },
       { id: 'v10', text: 'c = x + 12 のとき、x = 18 なら c は？', answer: '30', note: '18 + 12 = 30' },
       { id: 'v11', text: 'd = 100 - 3 × x のとき、x = 8 なら d は？', answer: '76', note: '100 - 24 = 76' },
-      { id: 'v12', text: 'p = 2 × x + 3 のとき、x = 9 なら p は？', answer: '21', note: '18 + 3 = 21' }
+      { id: 'v12', text: 'p = 2 × x + 3 のとき、x = 9 なら p は？', answer: '21', note: '18 + 3 = 21' },
+      { id: 'v13', text: 'm = x + 15 のとき、x = 20 なら m は？', answer: '35', note: '20 + 15 = 35' },
+      { id: 'v14', text: 'k = 6 × x のとき、x = 7 なら k は？', answer: '42', note: '6 × 7 = 42' },
+      { id: 'v15', text: 'r = 50 - x のとき、x = 14 なら r は？', answer: '36', note: '50 - 14 = 36' }
     ];
 
     const readingQuestions = [
@@ -51,7 +54,16 @@
       { id: 'r3', text: 'y = 500 - 80 × x の意味として正しいものは？', choices: ['500円を80人で分ける', '500円持っていて、80円のおかしをxこ買ったあとののこり', '80円をx回もらって500円になる'], answer: '500円持っていて、80円のおかしをxこ買ったあとののこり', note: 'はじめの金額から使った分を引く。' },
       { id: 'r4', text: 'm = 7 × x はどんな関係？', choices: ['xを7で割った数がm', 'xに7を足した数がm', 'xを7倍した数がm'], answer: 'xを7倍した数がm', note: '7 × x は「7倍」。' },
       { id: 'r5', text: 't = x ÷ 4 はどんな関係？', choices: ['xを4つに分けた1つ分がt', 'xを4倍した数がt', 'xから4を引いた数がt'], answer: 'xを4つに分けた1つ分がt', note: '÷4 は4等分。' },
-      { id: 'r6', text: 'k = 3 × x + 2 の説明として正しいものは？', choices: ['xに2をかけて3を足す', 'xを3倍して2を足す', 'xを3で割って2を足す'], answer: 'xを3倍して2を足す', note: '順番は 3×x のあと +2。' }
+      { id: 'r6', text: 'k = 3 × x + 2 の説明として正しいものは？', choices: ['xに2をかけて3を足す', 'xを3倍して2を足す', 'xを3で割って2を足す'], answer: 'xを3倍して2を足す', note: '順番は 3×x のあと +2。' },
+      { id: 'r7', text: 'y = 40 × x はどんな意味？', choices: ['40円のノートをx冊買った代金がy円', '40ページの本をx日読む日数がy日', 'x円を40人で分けた1人分がy円'], answer: '40円のノートをx冊買った代金がy円', note: '単価×個数。' },
+      { id: 'r8', text: 'y = x + 18 の説明として正しいものは？', choices: ['xから18を引く', 'xに18を足す', 'xを18倍する'], answer: 'xに18を足す', note: '+18 は18をたす。' },
+      { id: 'r9', text: 'z = 90 - x はどんな関係？', choices: ['90にxを足した数', '90からxを引いた数', 'xから90を引いた数'], answer: '90からxを引いた数', note: '前の数から後ろの数を引く。' },
+      { id: 'r10', text: 'p = x ÷ 3 はどんな意味？', choices: ['xを3等分した1つ分がp', 'xを3倍した数がp', 'xに3を足した数がp'], answer: 'xを3等分した1つ分がp', note: '÷3 は3等分。' },
+      { id: 'r11', text: 'y = 250 + 25 × x の場面は？', choices: ['250円から25円ずつ減る', 'はじめに250円あり、25円ずつ増える', '25円を250人で分ける'], answer: 'はじめに250円あり、25円ずつ増える', note: 'はじめの数 + ふえる分。' },
+      { id: 'r12', text: 'q = 5 × x + 1 の説明として正しいものは？', choices: ['xに1をかけて5を足す', 'xを5倍して1を足す', 'xを5で割って1を足す'], answer: 'xを5倍して1を足す', note: 'かけ算してから足す。' },
+      { id: 'r13', text: 'y = 300 - 50 × x の意味は？', choices: ['300円持っていて50円をx回使った残り', '50円をx回もらった合計', '300円を50人で分けた金額'], answer: '300円持っていて50円をx回使った残り', note: '最初の数から使った分を引く。' },
+      { id: 'r14', text: 'u = 9 × x はどんな関係？', choices: ['xを9倍した数', 'xを9で割った数', 'xに9を足した数'], answer: 'xを9倍した数', note: '×9 は9倍。' },
+      { id: 'r15', text: 'v = x + 4 の説明として正しいものは？', choices: ['xから4を引く', 'xに4を足す', 'xを4で割る'], answer: 'xに4を足す', note: '足し算の式。' }
     ];
 
     const buildQuestions = [
@@ -60,7 +72,16 @@
       { id: 'b3', text: 'x m のひもを 4 人で同じ長さに分けると、1人分は y m。', answer: 'y = x ÷ 4', note: '分けるので ÷。' },
       { id: 'b4', text: 'はじめに 500 円あり、1本 60 円のジュースを x 本買うと、のこりは y 円。', answer: 'y = 500 - 60 × x', note: 'はじめの金額から使った分を引く。' },
       { id: 'b5', text: 'x ページ読んだあと、さらに 12 ページ読むと、読んだ合計は y ページ。', answer: 'y = x + 12', note: '合計なので足し算。' },
-      { id: 'b6', text: '1辺が x cm の正方形のまわりの長さは y cm。', answer: 'y = 4 × x', note: '4本ぶんで 4×x。' }
+      { id: 'b6', text: '1辺が x cm の正方形のまわりの長さは y cm。', answer: 'y = 4 × x', note: '4本ぶんで 4×x。' },
+      { id: 'b7', text: 'はじめに x 円あり、200円もらいました。合計を y 円。', answer: 'y = x + 200', note: 'もらうので足し算。' },
+      { id: 'b8', text: 'ノートを x 冊、1冊 120円で買う。代金を y 円。', answer: 'y = 120 × x', note: '単価×個数。' },
+      { id: 'b9', text: 'x 個のクッキーを 5 人で同じ数ずつ分ける。1人分を y 個。', answer: 'y = x ÷ 5', note: '等分は割り算。' },
+      { id: 'b10', text: '最初に 1000 円あり、1本 90 円のペンを x 本買ったあとの残りを y 円。', answer: 'y = 1000 - 90 × x', note: '最初の金額−使った金額。' },
+      { id: 'b11', text: 'x cm のテープを 2 本つなげると、全体を y cm。', answer: 'y = 2 × x', note: '同じ長さが2本。' },
+      { id: 'b12', text: 'x 点に 15 点を足した合計を y 点。', answer: 'y = x + 15', note: '合計は足し算。' },
+      { id: 'b13', text: 'x 人に、1人 3 本ずつえんぴつを配る。使うえんぴつは y 本。', answer: 'y = 3 × x', note: '1人分×人数。' },
+      { id: 'b14', text: 'x m のリボンから 8 m 使った。残りを y m。', answer: 'y = x - 8', note: '残りは引き算。' },
+      { id: 'b15', text: 'はじめに 70 枚あり、毎日 x 枚ずつ使う。1日後の残りを y 枚。', answer: 'y = 70 - x', note: '最初から使った分を引く。' }
     ];
 
     const paletteGroups = {
@@ -75,20 +96,28 @@
       const [input, setInput] = useState('');
       const [feedback, setFeedback] = useState('');
       const [score, setScore] = useState(0);
+      const [celebrate, setCelebrate] = useState(false);
       const audioCtxRef = useRef(null);
 
-      const beep = (freq = 440, duration = 0.08) => {
+      const beep = (freq = 440, duration = 0.08, type = 'sine', volume = 0.05, when = 0) => {
         const Ctx = window.AudioContext || window.webkitAudioContext;
         if (!Ctx) return;
         if (!audioCtxRef.current) audioCtxRef.current = new Ctx();
         const ctx = audioCtxRef.current;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
+        osc.type = type;
         osc.frequency.value = freq;
-        gain.gain.value = 0.05;
+        gain.gain.value = volume;
         osc.connect(gain); gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + duration);
+        osc.start(ctx.currentTime + when);
+        osc.stop(ctx.currentTime + when + duration);
+      };
+
+      const playSuccessJingle = () => {
+        beep(784, 0.08, 'triangle', 0.06, 0);
+        beep(988, 0.08, 'triangle', 0.06, 0.1);
+        beep(1175, 0.14, 'triangle', 0.06, 0.2);
       };
 
       const current = useMemo(() => {
@@ -114,9 +143,14 @@
         if (mode === 'build') ok = canonicalExpression(input) === canonicalExpression(current.answer);
 
         if (ok) {
-          setScore((s) => s + 10); setFeedback(`せいかい！ ${current.note}`); beep(880, 0.12);
+          setScore((s) => s + 10);
+          setFeedback(`せいかい！ ${current.note}`);
+          setCelebrate(true);
+          playSuccessJingle();
+          setTimeout(() => setCelebrate(false), 900);
         } else {
-          setFeedback(`おしい！ 正解: ${current.answer} / ${current.note}`); beep(180, 0.2);
+          setFeedback(`おしい！ 正解: ${current.answer} / ${current.note}`);
+          beep(180, 0.2, 'sawtooth');
         }
       };
 
@@ -132,10 +166,19 @@
 
           {mode === 'home' && <main className="p-5 md:p-8 space-y-4">
             <div className="grid md:grid-cols-3 gap-3">
-              <button className="p-4 rounded-2xl bg-cyan-500 text-white font-bold" onClick={() => resetRound('value')}>① 値をもとめる（12問）</button>
-              <button className="p-4 rounded-2xl bg-indigo-500 text-white font-bold" onClick={() => resetRound('reading')}>② 式の意味を読む（6問）</button>
-              <button className="p-4 rounded-2xl bg-fuchsia-500 text-white font-bold" onClick={() => resetRound('build')}>③ 文章から式を作る（6問）</button>
+              <button className="p-4 rounded-2xl bg-cyan-500 text-white font-bold" onClick={() => resetRound('value')}>① 値をもとめる（15問）</button>
+              <button className="p-4 rounded-2xl bg-indigo-500 text-white font-bold" onClick={() => resetRound('reading')}>② 式の意味を読む（15問）</button>
+              <button className="p-4 rounded-2xl bg-fuchsia-500 text-white font-bold" onClick={() => resetRound('build')}>③ 文章から式を作る（15問）</button>
             </div>
+            <section className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4">
+              <h2 className="font-black text-amber-800">📘 学習のポイント（小6向け）</h2>
+              <ul className="mt-2 space-y-2 text-sm md:text-base text-amber-900 list-disc pl-5">
+                <li><b>「何がxか」を先に見る</b>：xが個数・人数・長さのどれかを先に決めよう。</li>
+                <li><b>言葉を計算に直す</b>：「ふえる→＋」「のこり→−」「1こ分×個数→×」「分ける→÷」。</li>
+                <li><b>式を声に出して読む</b>：例「y = 80 × x」は「yは80かけるx」。意味が合っているか確認できる。</li>
+                <li><b>まちがいは成長の材料</b>：解説を読んで「次はどこを見るか」を1つ決めよう。</li>
+              </ul>
+            </section>
           </main>}
 
           {(mode === 'value' || mode === 'reading' || mode === 'build') && current && <main className="p-5 md:p-8 space-y-4">
@@ -150,6 +193,7 @@
             </>}
 
             <div className="grid grid-cols-2 gap-3"><button className="p-3 rounded-xl bg-emerald-500 text-white font-bold" onClick={checkAnswer}>こたえあわせ</button><button className="p-3 rounded-xl bg-gray-700 text-white font-bold" onClick={nextQuestion}>つぎの問題</button></div>
+            {celebrate && <div className="text-center text-3xl animate-bounce">🎉✨🌟</div>}
             {feedback && <div className={`p-3 rounded-xl ${feedback.startsWith('せいかい') ? 'bg-green-50 text-green-700' : 'bg-rose-50 text-rose-700'}`}>{feedback}</div>}
           </main>}
         </div>
