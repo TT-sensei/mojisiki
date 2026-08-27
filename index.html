@@ -329,16 +329,16 @@
     function loadProgress() {
       try {
         const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-        if (!raw) return structuredClone(defaultProgress);
+        if (!raw) return clone(defaultProgress);
         return {
-          ...structuredClone(defaultProgress), ...raw,
+          ...clone(defaultProgress), ...raw,
           modeCorrect: { ...defaultProgress.modeCorrect, ...(raw.modeCorrect || {}) },
           modeAnswered: { ...defaultProgress.modeAnswered, ...(raw.modeAnswered || {}) },
           attemptedModes: Array.isArray(raw.attemptedModes) ? raw.attemptedModes : [],
           unlockedBadges: Array.isArray(raw.unlockedBadges) ? raw.unlockedBadges : []
         };
       } catch (error) {
-        return structuredClone(defaultProgress);
+        return clone(defaultProgress);
       }
     }
     let progress = loadProgress();
