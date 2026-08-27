@@ -426,7 +426,7 @@
     function renderNaviPanel(mood) {
       const view = naviView(mood);
       return '<aside class="navi-panel" aria-label="ナビキャラからのメッセージ">' +
-        '<p class="navi-kicker">TODAY\\'S NAVI</p>' +
+        '<p class="navi-kicker">TODAY’S NAVI</p>' +
         '<img src="' + view.image + '" alt="' + esc(view.navi.name) + 'のイラスト" />' +
         '<p class="navi-name">' + esc(view.navi.name) + ' <span style="font-size:11px;color:#64748b;">｜' + esc(view.navi.role) + '</span></p>' +
         '<p class="navi-line">' + esc(view.line) + '</p>' +
