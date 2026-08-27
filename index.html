@@ -392,7 +392,7 @@
       return {
         navi,
         image: imageFor(navi, mood),
-        line: naviLines[mood][state.naviIndex]
+        line: (naviLines[mood] || naviLines.study)[state.naviIndex]
       };
     }
     function checkBadges() {
