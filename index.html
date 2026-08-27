@@ -283,7 +283,7 @@
 
     const STORAGE_KEY = 'mojisiki:progress:v2';
     const NAVI_BASE = 'https://raw.githubusercontent.com/TT-sensei/navi-character-/main/assets/web/characters/';
-    const GROUP_STUDYING = 'https://raw.githubusercontent.com/TT-sensei/navi-character-/main/assets/web/groups/group-studying.webp';
+    const GROUP_DAILY_TOP = 'https://raw.githubusercontent.com/TT-sensei/navi-character-/main/assets/web/groups/daily/group-daily-classroom.webp';
 
     const modes = {
       value: { label: '値をもとめる', short: '値', accent: '#25b9c8', accentStrong: '#087f93', description: 'xの値を式に入れて、答えを計算します。', pool: valueQuestions },
@@ -383,7 +383,7 @@
       return { level, current, next: 100 - current };
     }
     function imageFor(navi, mood) {
-      if (mood === 'home') return GROUP_STUDYING;
+      if (mood === 'home') return GROUP_DAILY_TOP;
       const filename = mood === 'study' ? 'hint.webp' : mood === 'correct' ? 'correct.webp' : mood === 'retry' ? 'retry.webp' : 'complete.webp';
       return NAVI_BASE + 'characters/' + navi.id + '/fullbody/' + filename;
     }
