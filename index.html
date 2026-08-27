@@ -3,252 +3,637 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>文字と式パーク（小6）</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <meta name="theme-color" content="#173b73" />
+  <title>文字式パーク｜小学校6年 算数</title>
+  <style>
+    :root {
+      --ink: #17304f;
+      --muted: #64748b;
+      --paper: #f7fbff;
+      --card: #ffffff;
+      --line: #d9e5f2;
+      --navy: #173b73;
+      --blue: #1f70c1;
+      --cyan: #25b9c8;
+      --sky: #eaf7ff;
+      --mint: #e9fbf4;
+      --yellow: #fff5c9;
+      --orange: #f28a3b;
+      --red: #d9485f;
+      --shadow: 0 18px 48px rgba(31, 67, 110, .12);
+      --soft-shadow: 0 8px 24px rgba(31, 67, 110, .10);
+      --radius-lg: 26px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+    }
+    * { box-sizing: border-box; }
+    html { min-width: 320px; background: var(--paper); }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(37,185,200,.12), transparent 28rem),
+        radial-gradient(circle at 90% 5%, rgba(242,138,59,.10), transparent 24rem),
+        var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+      line-height: 1.6;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible {
+      outline: 4px solid rgba(37,185,200,.35);
+      outline-offset: 2px;
+    }
+    .app-shell { max-width: 1180px; margin: 0 auto; padding: 18px; }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 16px 20px; border: 1px solid rgba(217,229,242,.95);
+      background: rgba(255,255,255,.88); backdrop-filter: blur(12px);
+      border-radius: 22px; box-shadow: var(--soft-shadow); position: sticky; top: 12px; z-index: 10;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark {
+      width: 46px; height: 46px; flex: 0 0 46px; display: grid; place-items: center;
+      border-radius: 15px; color: white; background: linear-gradient(145deg, var(--navy), var(--blue));
+      font-size: 25px; font-weight: 900; box-shadow: 0 8px 18px rgba(23,59,115,.25);
+    }
+    .brand h1 { margin: 0; font-size: clamp(18px, 2.4vw, 25px); line-height: 1.15; letter-spacing: .02em; }
+    .brand p { margin: 4px 0 0; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .top-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+    .stat-pill, .outline-btn, .primary-btn, .ghost-btn {
+      border: 0; border-radius: 999px; padding: 10px 15px; font-weight: 800; transition: transform .18s, box-shadow .18s, background .18s;
+    }
+    .stat-pill { background: var(--sky); color: var(--navy); font-size: 13px; }
+    .stat-pill strong { color: var(--blue); font-size: 18px; margin-right: 3px; }
+    .outline-btn { background: white; border: 1px solid var(--line); color: var(--navy); }
+    .primary-btn { background: var(--navy); color: white; box-shadow: 0 8px 16px rgba(23,59,115,.18); }
+    .primary-btn.cyan { background: var(--cyan); color: #073d4a; }
+    .ghost-btn { background: transparent; color: var(--blue); padding-left: 8px; padding-right: 8px; }
+    .stat-pill:hover, .outline-btn:hover, .primary-btn:hover, .ghost-btn:hover { transform: translateY(-2px); }
+    .main-card { margin-top: 18px; background: rgba(255,255,255,.94); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; }
+    .home-wrap { padding: clamp(20px, 4vw, 44px); }
+    .hero {
+      display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr); gap: 26px; align-items: center;
+      padding: clamp(20px, 4vw, 38px); border-radius: 23px; color: white;
+      background: linear-gradient(125deg, #173b73 0%, #1f70c1 58%, #25b9c8 100%); position: relative; overflow: hidden;
+    }
+    .hero::after { content: ""; position: absolute; width: 230px; height: 230px; border: 34px solid rgba(255,255,255,.08); border-radius: 50%; right: -75px; top: -92px; }
+    .eyebrow { margin: 0 0 10px; font-size: 12px; letter-spacing: .12em; font-weight: 900; opacity: .8; }
+    .hero h2 { margin: 0; font-size: clamp(29px, 5vw, 54px); line-height: 1.18; letter-spacing: .02em; }
+    .hero h2 span { color: #ffe176; }
+    .hero-copy { margin: 14px 0 0; max-width: 600px; color: rgba(255,255,255,.87); font-weight: 700; }
+    .hero-progress { margin-top: 24px; max-width: 520px; }
+    .progress-label { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; font-weight: 900; }
+    .progress-track { height: 9px; margin-top: 7px; overflow: hidden; background: rgba(255,255,255,.25); border-radius: 99px; }
+    .progress-fill { height: 100%; border-radius: inherit; background: #ffe176; }
+    .hero-navi { position: relative; z-index: 1; display: grid; place-items: center; min-height: 230px; }
+    .hero-navi img { width: min(100%, 270px); height: 230px; object-fit: contain; filter: drop-shadow(0 16px 12px rgba(4,28,67,.22)); }
+    .navi-caption { position: absolute; right: 0; bottom: 2px; padding: 8px 13px; border-radius: 14px 14px 4px 14px; background: rgba(255,255,255,.96); color: var(--navy); font-size: 12px; font-weight: 900; box-shadow: var(--soft-shadow); }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 15px; margin: 30px 0 14px; }
+    .section-heading h3 { margin: 0; font-size: 20px; }
+    .section-heading p { margin: 4px 0 0; color: var(--muted); font-size: 13px; font-weight: 700; }
+    .mode-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .mode-card {
+      min-height: 202px; padding: 19px; text-align: left; border: 1px solid var(--line); border-radius: 20px;
+      background: white; color: var(--ink); box-shadow: 0 4px 0 rgba(217,229,242,.7); position: relative; overflow: hidden;
+      transition: transform .18s, box-shadow .18s, border-color .18s;
+    }
+    .mode-card::after { content: ""; position: absolute; width: 100px; height: 100px; border-radius: 50%; right: -42px; bottom: -48px; background: var(--card-accent, #dff7fa); }
+    .mode-card:hover { transform: translateY(-4px); box-shadow: 0 12px 22px rgba(31,67,110,.12); border-color: var(--card-accent-strong, var(--cyan)); }
+    .mode-number { display: inline-grid; place-items: center; width: 31px; height: 31px; border-radius: 10px; color: white; background: var(--card-accent-strong, var(--blue)); font-weight: 900; font-size: 13px; }
+    .mode-card h4 { margin: 18px 0 6px; font-size: 20px; position: relative; z-index: 1; }
+    .mode-card p { margin: 0; color: var(--muted); font-size: 13px; font-weight: 700; position: relative; z-index: 1; }
+    .mode-meta { display: flex; gap: 8px; margin-top: 17px; color: var(--card-accent-strong, var(--blue)); font-size: 12px; font-weight: 900; position: relative; z-index: 1; }
+    .study-card { padding: clamp(14px, 3vw, 28px); }
+    .study-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+    .study-title { display: flex; align-items: center; gap: 9px; font-weight: 900; }
+    .mode-chip { padding: 7px 11px; color: var(--navy); background: var(--sky); border-radius: 999px; font-size: 12px; }
+    .question-count { color: var(--muted); font-size: 13px; font-weight: 900; }
+    .study-grid { display: grid; grid-template-columns: minmax(0, 1fr) 265px; gap: 22px; align-items: start; }
+    .question-panel { min-width: 0; }
+    .question-progress { height: 8px; background: #e7eff7; border-radius: 99px; overflow: hidden; margin-bottom: 16px; }
+    .question-progress span { display: block; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--blue)); border-radius: inherit; }
+    .question-box { padding: clamp(19px, 3vw, 30px); border: 1px solid var(--line); border-radius: 21px; background: linear-gradient(180deg, #fbfdff, #f3f9fd); }
+    .question-label { margin: 0; color: var(--blue); font-size: 12px; font-weight: 900; letter-spacing: .08em; }
+    .question-text { margin: 11px 0 0; font-size: clamp(20px, 3.2vw, 29px); line-height: 1.55; font-weight: 900; white-space: pre-wrap; }
+    .answer-title { margin: 20px 0 9px; color: var(--muted); font-size: 12px; font-weight: 900; }
+    .answer-input {
+      width: 100%; min-height: 60px; padding: 12px 16px; border: 2px solid #b7d8ed; border-radius: 15px; color: var(--navy);
+      background: white; font-size: 22px; font-weight: 800; letter-spacing: .04em;
+    }
+    .answer-input:disabled { background: #f1f7fb; color: var(--muted); }
+    .choice-list { display: grid; gap: 10px; }
+    .choice {
+      width: 100%; padding: 14px 16px; text-align: left; border: 2px solid var(--line); border-radius: 14px;
+      color: var(--ink); background: white; font-weight: 800; line-height: 1.55; transition: transform .16s, border-color .16s, background .16s;
+    }
+    .choice:hover { transform: translateX(3px); border-color: var(--cyan); }
+    .choice.selected { border-color: var(--blue); background: #eaf4ff; box-shadow: inset 4px 0 0 var(--blue); }
+    .palette-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-top: 12px; }
+    .palette-group { padding: 10px; border: 1px solid var(--line); border-radius: 14px; background: white; }
+    .palette-group h5 { margin: 0 0 7px; color: var(--muted); font-size: 11px; }
+    .palette { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    .key {
+      min-height: 36px; padding: 4px 2px; border: 1px solid #cdddea; border-radius: 8px; color: var(--navy);
+      background: #f7fbff; font-weight: 900; font-size: 14px;
+    }
+    .key:hover { background: var(--yellow); border-color: #e4be44; }
+    .answer-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+    .answer-actions button { min-height: 48px; border-radius: 13px; }
+    .feedback { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; padding: 14px 16px; border-radius: 15px; font-weight: 800; }
+    .feedback .feedback-icon { flex: 0 0 25px; font-size: 22px; }
+    .feedback.good { color: #0b6441; background: var(--mint); border: 1px solid #bde8d4; }
+    .feedback.try { color: #8b3f18; background: #fff5e9; border: 1px solid #f1d3ac; }
+    .navi-panel {
+      padding: 17px; border: 1px solid var(--line); border-radius: 21px; background: #f7fbff;
+      position: sticky; top: 102px; text-align: center;
+    }
+    .navi-kicker { margin: 0; color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .12em; }
+    .navi-panel img { width: 100%; height: 200px; object-fit: contain; margin: 4px auto 0; filter: drop-shadow(0 10px 8px rgba(23,59,115,.12)); }
+    .navi-name { margin: 0; font-size: 17px; font-weight: 900; }
+    .navi-line { min-height: 53px; margin: 5px 0 0; color: var(--muted); font-size: 13px; font-weight: 700; }
+    .study-footnote { margin-top: 10px; color: var(--muted); font-size: 11px; text-align: center; }
+    .collection-panel { margin-top: 30px; padding: 19px; border: 1px solid var(--line); border-radius: 20px; background: #fbfdff; }
+    .collection-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+    .badge-card { min-width: 0; padding: 11px 7px 9px; border: 1px solid var(--line); border-radius: 14px; text-align: center; background: white; }
+    .badge-card img { width: 62px; height: 62px; object-fit: contain; display: block; margin: 0 auto 5px; }
+    .badge-card.locked img { filter: grayscale(1); opacity: .22; }
+    .badge-card strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+    .badge-card small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; font-weight: 700; }
+    .badge-card.locked strong { color: #94a3b8; }
+    .badges-page { padding: clamp(20px, 4vw, 40px); }
+    .badges-page-head { display: flex; align-items: end; justify-content: space-between; gap: 15px; margin-bottom: 22px; }
+    .badges-page h2 { margin: 0; font-size: 28px; }
+    .badges-page-head p { margin: 5px 0 0; color: var(--muted); font-weight: 700; }
+    .badge-large-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .badge-large {
+      display: grid; grid-template-columns: 92px 1fr; align-items: center; gap: 13px; min-height: 130px;
+      padding: 14px; border: 1px solid var(--line); border-radius: 18px; background: white;
+    }
+    .badge-large img { width: 88px; height: 88px; object-fit: contain; }
+    .badge-large.locked img { filter: grayscale(1); opacity: .2; }
+    .badge-large h3 { margin: 0; font-size: 16px; }
+    .badge-large p { margin: 5px 0 0; color: var(--muted); font-size: 12px; font-weight: 700; line-height: 1.5; }
+    .badge-status { display: inline-block; margin-top: 9px; padding: 4px 8px; border-radius: 999px; color: #0b6441; background: var(--mint); font-size: 10px; font-weight: 900; }
+    .locked .badge-status { color: #64748b; background: #f1f5f9; }
+    .complete-page { padding: clamp(30px, 6vw, 66px) 20px; text-align: center; }
+    .complete-page img { width: 210px; height: 210px; object-fit: contain; filter: drop-shadow(0 14px 10px rgba(23,59,115,.14)); }
+    .complete-page h2 { margin: 10px 0 5px; font-size: clamp(26px, 5vw, 42px); }
+    .complete-page p { margin: 0 auto; color: var(--muted); font-weight: 700; }
+    .complete-stats { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 22px 0; }
+    .complete-stat { min-width: 105px; padding: 12px 15px; border-radius: 14px; background: var(--sky); }
+    .complete-stat strong { display: block; color: var(--blue); font-size: 22px; }
+    .complete-stat span { color: var(--muted); font-size: 11px; font-weight: 900; }
+    .complete-actions { display: flex; justify-content: center; gap: 9px; flex-wrap: wrap; }
+    .toast {
+      position: fixed; left: 50%; bottom: 22px; z-index: 30; transform: translate(-50%, 140px);
+      display: flex; align-items: center; gap: 12px; max-width: calc(100vw - 30px); padding: 12px 17px;
+      border-radius: 15px; color: var(--navy); background: #fff7c7; border: 1px solid #e2c34d; box-shadow: var(--shadow);
+      font-size: 13px; font-weight: 900; transition: transform .3s ease;
+    }
+    .toast.show { transform: translate(-50%, 0); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media (max-width: 760px) {
+      .app-shell { padding: 10px; }
+      .topbar { position: static; padding: 12px; align-items: flex-start; }
+      .top-actions { gap: 5px; }
+      .stat-pill, .outline-btn { padding: 8px 10px; font-size: 11px; }
+      .stat-pill strong { font-size: 15px; }
+      .hero { grid-template-columns: 1fr; gap: 0; }
+      .hero-navi { min-height: 180px; margin-top: -5px; }
+      .hero-navi img { height: 175px; }
+      .navi-caption { right: 8%; }
+      .mode-grid, .badge-large-grid { grid-template-columns: 1fr; }
+      .study-grid { grid-template-columns: 1fr; }
+      .navi-panel { position: static; display: grid; grid-template-columns: 92px 1fr; grid-template-rows: auto auto; gap: 0 10px; text-align: left; align-items: center; }
+      .navi-panel .navi-kicker { grid-column: 2; }
+      .navi-panel img { grid-column: 1; grid-row: 1 / span 2; height: 105px; margin: 0; }
+      .navi-panel .navi-name, .navi-panel .navi-line { grid-column: 2; }
+      .navi-panel .navi-line { min-height: auto; }
+      .palette-wrap { grid-template-columns: 1fr; }
+      .collection-grid { grid-template-columns: repeat(3, 1fr); }
+      .section-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+      .badges-page-head { align-items: flex-start; flex-direction: column; }
+    }
+    @media (max-width: 420px) {
+      .brand p { display: none; }
+      .top-actions .stat-pill:first-child { display: none; }
+      .answer-actions { grid-template-columns: 1fr; }
+      .question-text { font-size: 19px; }
+    }
+  </style>
 </head>
-<body class="bg-sky-50">
-  <div id="root"></div>
-
-  <script type="text/babel">
-    const { useState, useMemo, useRef } = React;
-
-    const shuffle = (arr) => {
-      const next = [...arr];
-      for (let i = next.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [next[i], next[j]] = [next[j], next[i]];
-      }
-      return next;
-    };
-
-    const normalizeBasic = (str) => str.replace(/\s+/g, '').replace(/＝/g, '=').replace(/÷/g, '/').replace(/×/g, '*');
-    const canonicalSide = (side) =>
-      side
-        .split('+')
-        .map((s) => s.trim())
-        .filter(Boolean)
-        .sort()
-        .join('+');
-    const canonicalExpression = (str) => {
-      const n = normalizeBasic(str);
-      const [left, right] = n.split('=');
-      if (right === undefined) return canonicalSide(n);
-      return [canonicalSide(left), canonicalSide(right)].sort().join('=');
-    };
-
+<body>
+  <div id="app"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script>
     const valueQuestions = [
-      { id: 'v1', text: 'y = x + 5 のとき、x = 3 なら y は？', answer: '8', note: '3 + 5 = 8' },
-      { id: 'v2', text: 'y = 2 × x のとき、x = 4 なら y は？', answer: '8', note: '2 × 4 = 8' },
-      { id: 'v3', text: 'y = x ÷ 2 のとき、x = 10 なら y は？', answer: '5', note: '10 ÷ 2 = 5' },
-      { id: 'v4', text: 'y = x + 7 のとき、x = 9 なら y は？', answer: '16', note: '9 + 7 = 16' },
-      { id: 'v5', text: 'y = x - 4 のとき、x = 13 なら y は？', answer: '9', note: '13 - 4 = 9' },
-      { id: 'v6', text: 'a = 3 × n + 1 のとき、n = 5 なら a は？', answer: '16', note: '3 × 5 + 1 = 16' },
-      { id: 'v7', text: 'b = 20 - x のとき、x = 7 なら b は？', answer: '13', note: '20 - 7 = 13' },
-      { id: 'v8', text: 'y = 4 × x のとき、x = 6 なら y は？', answer: '24', note: '4 × 6 = 24' },
-      { id: 'v9', text: 'y = x ÷ 5 のとき、x = 45 なら y は？', answer: '9', note: '45 ÷ 5 = 9' },
-      { id: 'v10', text: 'c = x + 12 のとき、x = 18 なら c は？', answer: '30', note: '18 + 12 = 30' },
-      { id: 'v11', text: 'd = 100 - 3 × x のとき、x = 8 なら d は？', answer: '76', note: '100 - 24 = 76' },
-      { id: 'v12', text: 'p = 2 × x + 3 のとき、x = 9 なら p は？', answer: '21', note: '18 + 3 = 21' },
-      { id: 'v13', text: 'm = x + 15 のとき、x = 20 なら m は？', answer: '35', note: '20 + 15 = 35' },
-      { id: 'v14', text: 'k = 6 × x のとき、x = 7 なら k は？', answer: '42', note: '6 × 7 = 42' },
-      { id: 'v15', text: 'r = 50 - x のとき、x = 14 なら r は？', answer: '36', note: '50 - 14 = 36' }
-    ];
-
+          { id: 'v1', text: 'y = x + 5 のとき、x = 3 なら y は？', answer: '8', note: '3 + 5 = 8' },
+          { id: 'v2', text: 'y = 2 × x のとき、x = 4 なら y は？', answer: '8', note: '2 × 4 = 8' },
+          { id: 'v3', text: 'y = x ÷ 2 のとき、x = 10 なら y は？', answer: '5', note: '10 ÷ 2 = 5' },
+          { id: 'v4', text: 'y = x + 7 のとき、x = 9 なら y は？', answer: '16', note: '9 + 7 = 16' },
+          { id: 'v5', text: 'y = x - 4 のとき、x = 13 なら y は？', answer: '9', note: '13 - 4 = 9' },
+          { id: 'v6', text: 'a = 3 × n + 1 のとき、n = 5 なら a は？', answer: '16', note: '3 × 5 + 1 = 16' },
+          { id: 'v7', text: 'b = 20 - x のとき、x = 7 なら b は？', answer: '13', note: '20 - 7 = 13' },
+          { id: 'v8', text: 'y = 4 × x のとき、x = 6 なら y は？', answer: '24', note: '4 × 6 = 24' },
+          { id: 'v9', text: 'y = x ÷ 5 のとき、x = 45 なら y は？', answer: '9', note: '45 ÷ 5 = 9' },
+          { id: 'v10', text: 'c = x + 12 のとき、x = 18 なら c は？', answer: '30', note: '18 + 12 = 30' },
+          { id: 'v11', text: 'd = 100 - 3 × x のとき、x = 8 なら d は？', answer: '76', note: '100 - 24 = 76' },
+          { id: 'v12', text: 'p = 2 × x + 3 のとき、x = 9 なら p は？', answer: '21', note: '18 + 3 = 21' },
+          { id: 'v13', text: 'm = x + 15 のとき、x = 20 なら m は？', answer: '35', note: '20 + 15 = 35' },
+          { id: 'v14', text: 'k = 6 × x のとき、x = 7 なら k は？', answer: '42', note: '6 × 7 = 42' },
+          { id: 'v15', text: 'r = 50 - x のとき、x = 14 なら r は？', answer: '36', note: '50 - 14 = 36' }
+        ];
+    
     const readingQuestions = [
-      { id: 'r1', text: '式 y = 120 + 30 × x が表す場面として正しいものは？', choices: ['1本30円のえんぴつをx本買い、はじめに120円ある。のこりをy円とする', 'はじめに120円あり、1本30円のえんぴつをx本買ったあとの合計金額をy円とする', '1本120円のえんぴつを30本買い、合計をy円とする'], answer: 'はじめに120円あり、1本30円のえんぴつをx本買ったあとの合計金額をy円とする', note: '120に、30ずつふえる分(30×x)を足す。' },
-      { id: 'r2', text: '長方形の面積を表す式 S = 6 × x がある。xは何を表す？', choices: ['たてが6cm、よこがxcmのときの面積', 'まわりの長さが6×x cmのときの面積', '6cm²の図形をxこ集めた数'], answer: 'たてが6cm、よこがxcmのときの面積', note: '面積は たて × よこ。' },
-      { id: 'r3', text: 'y = 500 - 80 × x の意味として正しいものは？', choices: ['500円を80人で分ける', '500円持っていて、80円のおかしをxこ買ったあとののこり', '80円をx回もらって500円になる'], answer: '500円持っていて、80円のおかしをxこ買ったあとののこり', note: 'はじめの金額から使った分を引く。' },
-      { id: 'r4', text: 'm = 7 × x はどんな関係？', choices: ['xを7で割った数がm', 'xに7を足した数がm', 'xを7倍した数がm'], answer: 'xを7倍した数がm', note: '7 × x は「7倍」。' },
-      { id: 'r5', text: 't = x ÷ 4 はどんな関係？', choices: ['xを4つに分けた1つ分がt', 'xを4倍した数がt', 'xから4を引いた数がt'], answer: 'xを4つに分けた1つ分がt', note: '÷4 は4等分。' },
-      { id: 'r6', text: 'k = 3 × x + 2 の説明として正しいものは？', choices: ['xに2をかけて3を足す', 'xを3倍して2を足す', 'xを3で割って2を足す'], answer: 'xを3倍して2を足す', note: '順番は 3×x のあと +2。' },
-      { id: 'r7', text: 'y = 40 × x はどんな意味？', choices: ['40円のノートをx冊買った代金がy円', '40ページの本をx日読む日数がy日', 'x円を40人で分けた1人分がy円'], answer: '40円のノートをx冊買った代金がy円', note: '単価×個数。' },
-      { id: 'r8', text: 'y = x + 18 の説明として正しいものは？', choices: ['xから18を引く', 'xに18を足す', 'xを18倍する'], answer: 'xに18を足す', note: '+18 は18をたす。' },
-      { id: 'r9', text: 'z = 90 - x はどんな関係？', choices: ['90にxを足した数', '90からxを引いた数', 'xから90を引いた数'], answer: '90からxを引いた数', note: '前の数から後ろの数を引く。' },
-      { id: 'r10', text: 'p = x ÷ 3 はどんな意味？', choices: ['xを3等分した1つ分がp', 'xを3倍した数がp', 'xに3を足した数がp'], answer: 'xを3等分した1つ分がp', note: '÷3 は3等分。' },
-      { id: 'r11', text: 'y = 250 + 25 × x の場面は？', choices: ['250円から25円ずつ減る', 'はじめに250円あり、25円ずつ増える', '25円を250人で分ける'], answer: 'はじめに250円あり、25円ずつ増える', note: 'はじめの数 + ふえる分。' },
-      { id: 'r12', text: 'q = 5 × x + 1 の説明として正しいものは？', choices: ['xに1をかけて5を足す', 'xを5倍して1を足す', 'xを5で割って1を足す'], answer: 'xを5倍して1を足す', note: 'かけ算してから足す。' },
-      { id: 'r13', text: 'y = 300 - 50 × x の意味は？', choices: ['300円持っていて50円をx回使った残り', '50円をx回もらった合計', '300円を50人で分けた金額'], answer: '300円持っていて50円をx回使った残り', note: '最初の数から使った分を引く。' },
-      { id: 'r14', text: 'u = 9 × x はどんな関係？', choices: ['xを9倍した数', 'xを9で割った数', 'xに9を足した数'], answer: 'xを9倍した数', note: '×9 は9倍。' },
-      { id: 'r15', text: 'v = x + 4 の説明として正しいものは？', choices: ['xから4を引く', 'xに4を足す', 'xを4で割る'], answer: 'xに4を足す', note: '足し算の式。' }
-    ];
-
+          { id: 'r1', text: '式 y = 120 + 30 × x が表す場面として正しいものは？', choices: ['1本30円のえんぴつをx本買い、はじめに120円ある。のこりをy円とする', 'はじめに120円あり、1本30円のえんぴつをx本買ったあとの合計金額をy円とする', '1本120円のえんぴつを30本買い、合計をy円とする'], answer: 'はじめに120円あり、1本30円のえんぴつをx本買ったあとの合計金額をy円とする', note: '120に、30ずつふえる分(30×x)を足す。' },
+          { id: 'r2', text: '長方形の面積を表す式 S = 6 × x がある。xは何を表す？', choices: ['たてが6cm、よこがxcmのときの面積', 'まわりの長さが6×x cmのときの面積', '6cm²の図形をxこ集めた数'], answer: 'たてが6cm、よこがxcmのときの面積', note: '面積は たて × よこ。' },
+          { id: 'r3', text: 'y = 500 - 80 × x の意味として正しいものは？', choices: ['500円を80人で分ける', '500円持っていて、80円のおかしをxこ買ったあとののこり', '80円をx回もらって500円になる'], answer: '500円持っていて、80円のおかしをxこ買ったあとののこり', note: 'はじめの金額から使った分を引く。' },
+          { id: 'r4', text: 'm = 7 × x はどんな関係？', choices: ['xを7で割った数がm', 'xに7を足した数がm', 'xを7倍した数がm'], answer: 'xを7倍した数がm', note: '7 × x は「7倍」。' },
+          { id: 'r5', text: 't = x ÷ 4 はどんな関係？', choices: ['xを4つに分けた1つ分がt', 'xを4倍した数がt', 'xから4を引いた数がt'], answer: 'xを4つに分けた1つ分がt', note: '÷4 は4等分。' },
+          { id: 'r6', text: 'k = 3 × x + 2 の説明として正しいものは？', choices: ['xに2をかけて3を足す', 'xを3倍して2を足す', 'xを3で割って2を足す'], answer: 'xを3倍して2を足す', note: '順番は 3×x のあと +2。' },
+          { id: 'r7', text: 'y = 40 × x はどんな意味？', choices: ['40円のノートをx冊買った代金がy円', '40ページの本をx日読む日数がy日', 'x円を40人で分けた1人分がy円'], answer: '40円のノートをx冊買った代金がy円', note: '単価×個数。' },
+          { id: 'r8', text: 'y = x + 18 の説明として正しいものは？', choices: ['xから18を引く', 'xに18を足す', 'xを18倍する'], answer: 'xに18を足す', note: '+18 は18をたす。' },
+          { id: 'r9', text: 'z = 90 - x はどんな関係？', choices: ['90にxを足した数', '90からxを引いた数', 'xから90を引いた数'], answer: '90からxを引いた数', note: '前の数から後ろの数を引く。' },
+          { id: 'r10', text: 'p = x ÷ 3 はどんな意味？', choices: ['xを3等分した1つ分がp', 'xを3倍した数がp', 'xに3を足した数がp'], answer: 'xを3等分した1つ分がp', note: '÷3 は3等分。' },
+          { id: 'r11', text: 'y = 250 + 25 × x の場面は？', choices: ['250円から25円ずつ減る', 'はじめに250円あり、25円ずつ増える', '25円を250人で分ける'], answer: 'はじめに250円あり、25円ずつ増える', note: 'はじめの数 + ふえる分。' },
+          { id: 'r12', text: 'q = 5 × x + 1 の説明として正しいものは？', choices: ['xに1をかけて5を足す', 'xを5倍して1を足す', 'xを5で割って1を足す'], answer: 'xを5倍して1を足す', note: 'かけ算してから足す。' },
+          { id: 'r13', text: 'y = 300 - 50 × x の意味は？', choices: ['300円持っていて50円をx回使った残り', '50円をx回もらった合計', '300円を50人で分けた金額'], answer: '300円持っていて50円をx回使った残り', note: '最初の数から使った分を引く。' },
+          { id: 'r14', text: 'u = 9 × x はどんな関係？', choices: ['xを9倍した数', 'xを9で割った数', 'xに9を足した数'], answer: 'xを9倍した数', note: '×9 は9倍。' },
+          { id: 'r15', text: 'v = x + 4 の説明として正しいものは？', choices: ['xから4を引く', 'xに4を足す', 'xを4で割る'], answer: 'xに4を足す', note: '足し算の式。' }
+        ];
+    
     const buildQuestions = [
-      { id: 'b1', text: 'りんごが x こあり、さらに 3 こもらいました。ぜんぶで y こ。式を作ろう。', answer: 'y = x + 3', note: '「もらう」は足し算。' },
-      { id: 'b2', text: '1こ 80円 のパンを x こ買うと、代金は y 円。', answer: 'y = 80 × x', note: '単価×個数。' },
-      { id: 'b3', text: 'x m のひもを 4 人で同じ長さに分けると、1人分は y m。', answer: 'y = x ÷ 4', note: '分けるので ÷。' },
-      { id: 'b4', text: 'はじめに 500 円あり、1本 60 円のジュースを x 本買うと、のこりは y 円。', answer: 'y = 500 - 60 × x', note: 'はじめの金額から使った分を引く。' },
-      { id: 'b5', text: 'x ページ読んだあと、さらに 12 ページ読むと、読んだ合計は y ページ。', answer: 'y = x + 12', note: '合計なので足し算。' },
-      { id: 'b6', text: '1辺が x cm の正方形のまわりの長さは y cm。', answer: 'y = 4 × x', note: '4本ぶんで 4×x。' },
-      { id: 'b7', text: 'はじめに x 円あり、200円もらいました。合計を y 円。', answer: 'y = x + 200', note: 'もらうので足し算。' },
-      { id: 'b8', text: 'ノートを x 冊、1冊 120円で買う。代金を y 円。', answer: 'y = 120 × x', note: '単価×個数。' },
-      { id: 'b9', text: 'x 個のクッキーを 5 人で同じ数ずつ分ける。1人分を y 個。', answer: 'y = x ÷ 5', note: '等分は割り算。' },
-      { id: 'b10', text: '最初に 1000 円あり、1本 90 円のペンを x 本買ったあとの残りを y 円。', answer: 'y = 1000 - 90 × x', note: '最初の金額−使った金額。' },
-      { id: 'b11', text: 'x cm のテープを 2 本つなげると、全体を y cm。', answer: 'y = 2 × x', note: '同じ長さが2本。' },
-      { id: 'b12', text: 'x 点に 15 点を足した合計を y 点。', answer: 'y = x + 15', note: '合計は足し算。' },
-      { id: 'b13', text: 'x 人に、1人 3 本ずつえんぴつを配る。使うえんぴつは y 本。', answer: 'y = 3 × x', note: '1人分×人数。' },
-      { id: 'b14', text: 'x m のリボンから 8 m 使った。残りを y m。', answer: 'y = x - 8', note: '残りは引き算。' },
-      { id: 'b15', text: 'はじめに 70 枚あり、毎日 x 枚ずつ使う。1日後の残りを y 枚。', answer: 'y = 70 - x', note: '最初から使った分を引く。' }
-    ];
+          { id: 'b1', text: 'りんごが x こあり、さらに 3 こもらいました。ぜんぶで y こ。式を作ろう。', answer: 'y = x + 3', note: '「もらう」は足し算。' },
+          { id: 'b2', text: '1こ 80円 のパンを x こ買うと、代金は y 円。', answer: 'y = 80 × x', note: '単価×個数。' },
+          { id: 'b3', text: 'x m のひもを 4 人で同じ長さに分けると、1人分は y m。', answer: 'y = x ÷ 4', note: '分けるので ÷。' },
+          { id: 'b4', text: 'はじめに 500 円あり、1本 60 円のジュースを x 本買うと、のこりは y 円。', answer: 'y = 500 - 60 × x', note: 'はじめの金額から使った分を引く。' },
+          { id: 'b5', text: 'x ページ読んだあと、さらに 12 ページ読むと、読んだ合計は y ページ。', answer: 'y = x + 12', note: '合計なので足し算。' },
+          { id: 'b6', text: '1辺が x cm の正方形のまわりの長さは y cm。', answer: 'y = 4 × x', note: '4本ぶんで 4×x。' },
+          { id: 'b7', text: 'はじめに x 円あり、200円もらいました。合計を y 円。', answer: 'y = x + 200', note: 'もらうので足し算。' },
+          { id: 'b8', text: 'ノートを x 冊、1冊 120円で買う。代金を y 円。', answer: 'y = 120 × x', note: '単価×個数。' },
+          { id: 'b9', text: 'x 個のクッキーを 5 人で同じ数ずつ分ける。1人分を y 個。', answer: 'y = x ÷ 5', note: '等分は割り算。' },
+          { id: 'b10', text: '最初に 1000 円あり、1本 90 円のペンを x 本買ったあとの残りを y 円。', answer: 'y = 1000 - 90 × x', note: '最初の金額−使った金額。' },
+          { id: 'b11', text: 'x cm のテープを 2 本つなげると、全体を y cm。', answer: 'y = 2 × x', note: '同じ長さが2本。' },
+          { id: 'b12', text: 'x 点に 15 点を足した合計を y 点。', answer: 'y = x + 15', note: '合計は足し算。' },
+          { id: 'b13', text: 'x 人に、1人 3 本ずつえんぴつを配る。使うえんぴつは y 本。', answer: 'y = 3 × x', note: '1人分×人数。' },
+          { id: 'b14', text: 'x m のリボンから 8 m 使った。残りを y m。', answer: 'y = x - 8', note: '残りは引き算。' },
+          { id: 'b15', text: 'はじめに 70 枚あり、毎日 x 枚ずつ使う。1日後の残りを y 枚。', answer: 'y = 70 - x', note: '最初から使った分を引く。' }
+        ];
 
-    const titleRanks = [
-      '文字式みならい',
-      'xとyのなかま',
-      'たし算の式づくり',
-      'ひき算の式づくり',
-      'かけ算の式づくり',
-      'わり算の式づくり',
-      '式の読みときビギナー',
-      '式の読みときマスター',
-      '変数つかいはじめ',
-      '変数つかいこなし',
-      '等式チェッカー',
-      '文章題の式ハンター',
-      '計算と式のレンジャー',
-      '文字式のクラフター',
-      '算数式のエキスパート',
-      '文字式のナビゲーター',
-      '算数式のアーキテクト',
-      '等式のグランドマスター',
-      '文字式のレジェンド',
-      '算数の文字式チャンピオン'
-    ];
+    const STORAGE_KEY = 'mojisiki:progress:v2';
+    const NAVI_BASE = 'https://raw.githubusercontent.com/TT-sensei/navi-character-/main/assets/web/characters/';
+    const GROUP_STUDYING = 'https://raw.githubusercontent.com/TT-sensei/navi-character-/main/assets/web/groups/group-studying.webp';
 
+    const modes = {
+      value: { label: '値をもとめる', short: '値', accent: '#25b9c8', accentStrong: '#087f93', description: 'xの値を式に入れて、答えを計算します。', pool: valueQuestions },
+      reading: { label: '式の意味を読む', short: '読む', accent: '#9c7ae8', accentStrong: '#6842b3', description: '式が表している場面や関係を読み取ります。', pool: readingQuestions },
+      build: { label: '文章から式を作る', short: '作る', accent: '#ef9b4f', accentStrong: '#b96320', description: '文章の中の数量の関係を、文字式に表します。', pool: buildQuestions }
+    };
     const paletteGroups = {
       '数字': ['7','8','9','4','5','6','1','2','3','0','.'],
       '文字': ['x','y','a','b','c','n'],
       '式記号': ['+','-','×','÷','=','(',')','/','←','クリア']
     };
-
-    function App() {
-      const [mode, setMode] = useState('home');
-      const [index, setIndex] = useState(0);
-      const [input, setInput] = useState('');
-      const [feedback, setFeedback] = useState('');
-      const [score, setScore] = useState(0);
-      const [valuePool, setValuePool] = useState(() => shuffle(valueQuestions));
-      const [readingPool, setReadingPool] = useState(() => shuffle(readingQuestions));
-      const [buildPool, setBuildPool] = useState(() => shuffle(buildQuestions));
-      const [celebrate, setCelebrate] = useState(false);
-      const audioCtxRef = useRef(null);
-
-      const beep = (freq = 440, duration = 0.08, type = 'sine', volume = 0.05, when = 0) => {
-        const Ctx = window.AudioContext || window.webkitAudioContext;
-        if (!Ctx) return;
-        if (!audioCtxRef.current) audioCtxRef.current = new Ctx();
-        const ctx = audioCtxRef.current;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = type;
-        osc.frequency.value = freq;
-        gain.gain.value = volume;
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + when);
-        osc.stop(ctx.currentTime + when + duration);
-      };
-
-      const playSuccessJingle = () => {
-        beep(784, 0.08, 'triangle', 0.06, 0);
-        beep(988, 0.08, 'triangle', 0.06, 0.1);
-        beep(1175, 0.14, 'triangle', 0.06, 0.2);
-      };
-
-      const current = useMemo(() => {
-        if (mode === 'value') return valuePool[index % valuePool.length];
-        if (mode === 'reading') return readingPool[index % readingPool.length];
-        if (mode === 'build') return buildPool[index % buildPool.length];
-        return null;
-      }, [mode, index, valuePool, readingPool, buildPool]);
-
-      const currentTitle = titleRanks[Math.min(Math.floor(score / 100), titleRanks.length - 1)];
-      const pointsToNextTitle = 100 - (score % 100);
-
-      const resetRound = (nextMode) => {
-        if (nextMode === 'value') setValuePool(shuffle(valueQuestions));
-        if (nextMode === 'reading') setReadingPool(shuffle(readingQuestions));
-        if (nextMode === 'build') setBuildPool(shuffle(buildQuestions));
-        setMode(nextMode);
-        setIndex(0);
-        setInput('');
-        setFeedback('');
-        beep(520, 0.05);
-      };
-      const onPalette = (key) => {
-        beep(300, 0.03);
-        if (key === '←') return setInput((v) => v.slice(0, -1));
-        if (key === 'クリア') return setInput('');
-        setInput((v) => v + key);
-      };
-
-      const checkAnswer = () => {
-        if (!current) return;
-        let ok = false;
-        if (mode === 'value') ok = normalizeBasic(input) === normalizeBasic(current.answer);
-        if (mode === 'reading') ok = input === current.answer;
-        if (mode === 'build') ok = canonicalExpression(input) === canonicalExpression(current.answer);
-
-        if (ok) {
-          setScore((s) => s + 10);
-          setFeedback(`せいかい！ ${current.note}`);
-          setCelebrate(true);
-          playSuccessJingle();
-          setTimeout(() => setCelebrate(false), 900);
-        } else {
-          setFeedback(`おしい！ 正解: ${current.answer} / ${current.note}`);
-          beep(180, 0.2, 'sawtooth');
-        }
-      };
-
-      const nextQuestion = () => { setIndex((i) => i + 1); setInput(''); setFeedback(''); beep(640, 0.05); };
-
-      return (<div className="min-h-screen p-3 md:p-6 font-sans">
-        <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-sky-200">
-          <header className="p-4 md:p-6 bg-gradient-to-r from-cyan-400 to-indigo-500 text-white">
-            <h1 className="text-2xl md:text-3xl font-black">🎈 文字と式パーク（小6）</h1>
-            <p className="text-sm md:text-base mt-1">数字・文字・式を分けて入力！音つきで楽しく練習！</p>
-            <p className="mt-2 font-bold">スコア: {score} pt</p>
-            <p className="font-semibold">称号: {currentTitle}（次の称号まで {pointsToNextTitle} pt）</p>
-          </header>
-
-          {mode === 'home' && <main className="p-5 md:p-8 space-y-4">
-            <div className="grid md:grid-cols-3 gap-3">
-              <button className="p-4 rounded-2xl bg-cyan-500 text-white font-bold" onClick={() => resetRound('value')}>① 値をもとめる（15問）</button>
-              <button className="p-4 rounded-2xl bg-indigo-500 text-white font-bold" onClick={() => resetRound('reading')}>② 式の意味を読む（15問）</button>
-              <button className="p-4 rounded-2xl bg-fuchsia-500 text-white font-bold" onClick={() => resetRound('build')}>③ 文章から式を作る（15問）</button>
-            </div>
-            <section className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4">
-              <h2 className="font-black text-amber-800">📘 学習のポイント（小6向け）</h2>
-              <ul className="mt-2 space-y-2 text-sm md:text-base text-amber-900 list-disc pl-5">
-                <li><b>「何がxか」を先に見る</b>：xが個数・人数・長さのどれかを先に決めよう。</li>
-                <li><b>言葉を計算に直す</b>：「ふえる→＋」「のこり→−」「1こ分×個数→×」「分ける→÷」。</li>
-                <li><b>式を声に出して読む</b>：例「y = 80 × x」は「yは80かけるx」。意味が合っているか確認できる。</li>
-                <li><b>まちがいは成長の材料</b>：解説を読んで「次はどこを見るか」を1つ決めよう。</li>
-              </ul>
-            </section>
-          </main>}
-
-          {(mode === 'value' || mode === 'reading' || mode === 'build') && current && <main className="p-5 md:p-8 space-y-4">
-            <button className="text-sm text-indigo-600" onClick={() => setMode('home')}>← ホームへ</button>
-            <div className="bg-slate-50 rounded-2xl p-4 border"><p className="font-bold">もんだい {index + 1}</p><p className="mt-2 text-lg">{current.text}</p></div>
-
-            {mode === 'reading' ? <div className="space-y-2">{current.choices.map((choice) => <button key={choice} className={`w-full text-left p-3 rounded-xl border ${input===choice ? 'bg-indigo-100 border-indigo-400' : 'bg-white'}`} onClick={() => setInput(choice)}>{choice}</button>)}</div> : <>
-              <input className="w-full border-2 border-sky-200 p-3 rounded-xl text-2xl" value={input} onChange={(e) => setInput(e.target.value)} placeholder={mode === 'build' ? '例: y = 80 × x' : 'こたえを入力'} />
-              <div className="grid md:grid-cols-3 gap-3">
-                {Object.entries(paletteGroups).map(([title, keys]) => <div key={title} className="bg-sky-50 border rounded-xl p-2"><p className="font-bold text-sm mb-2">{title}</p><div className="grid grid-cols-4 gap-2">{keys.map((key) => <button key={key} className="p-2 rounded-lg bg-white border font-bold" onClick={() => onPalette(key)}>{key}</button>)}</div></div>)}
-              </div>
-            </>}
-
-            <div className="grid grid-cols-2 gap-3"><button className="p-3 rounded-xl bg-emerald-500 text-white font-bold" onClick={checkAnswer}>こたえあわせ</button><button className="p-3 rounded-xl bg-gray-700 text-white font-bold" onClick={nextQuestion}>つぎの問題</button></div>
-            {celebrate && <div className="text-center text-3xl animate-bounce">🎉✨🌟</div>}
-            {feedback && <div className={`p-3 rounded-xl ${feedback.startsWith('せいかい') ? 'bg-green-50 text-green-700' : 'bg-rose-50 text-rose-700'}`}>{feedback}</div>}
-          </main>}
-        </div>
-      </div>);
+    const navis = [
+      { id: 'riku', name: 'りく', role: '落ち着いて整理', mood: 'arms-crossed' },
+      { id: 'sora', name: 'そら', role: '元気に一歩', mood: 'thumbs-up' },
+      { id: 'kai', name: 'かい', role: '根拠を確認', mood: 'adjusting-glasses' },
+      { id: 'saku', name: 'さく', role: 'やさしく応援', mood: 'finger-heart' },
+      { id: 'tsuki', name: 'つき', role: '挑戦を後押し', mood: 'peace-sign' },
+      { id: 'nami', name: 'なみ', role: 'ていねいに見直し', mood: 'hand-over-heart' }
+    ];
+    const naviLines = {
+      study: ['式の中で、何が変わる数か見つけよう。', 'まずは問題文をゆっくり読んでみよう！', 'xが何を表すか整理すると、見えてくるよ。', '言葉を一つずつ、式に置き換えよう。', '一問ずつ進めば、きっと大丈夫！', '答えだけでなく、式の意味も見てみよう。'],
+      correct: ['いい整理だね。その調子！', 'せいかい！次もいけるよ！', '式と答えがつながったね。', 'すてき！根拠をもって答えられたね。', 'ナイスチャレンジ！力がついているよ。', 'ていねいに考えた結果だね。'],
+      retry: ['おしい！どの言葉に注目する？', 'もう一度、式の形を見てみよう。', 'まちがいはヒント。ゆっくり考えよう。', 'あと少し！分かっている数を整理しよう。', '大丈夫。次の一手を探してみよう。', '問題文と式を、もう一度つないでみよう。'],
+      complete: ['今日の挑戦、おつかれさま！', '最後までやり切ったね！', '学んだことが積み上がったよ。', 'できたことを、しっかりほめよう。', '挑戦した分だけ、前に進んだね！', '次の学びも楽しみだね。']
+    };
+    const badges = [
+      { id: 'level-up', name: 'はじめの一歩', description: '1問せいかいする', image: 'https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/badges/common/level-up/badge.png', condition: p => p.totalCorrect >= 1 },
+      { id: 'generalization', name: '変わる数を発見', description: '「文章から式を作る」で3問せいかい', image: 'https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/badges/math/generalization/badge.png', condition: p => p.modeCorrect.build >= 3 },
+      { id: 'relationship', name: '関係キャッチャー', description: '「式の意味を読む」で3問せいかい', image: 'https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/badges/math/relationship/badge.png', condition: p => p.modeCorrect.reading >= 3 },
+      { id: 'verification', name: '式をたしかめた', description: '合計10問せいかいする', image: 'https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/badges/math/verification/badge.png', condition: p => p.totalCorrect >= 10 },
+      { id: 'math-explainer', name: '式の説明名人', description: '「文章から式を作る」で10問せいかい', image: 'https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/badges/math/math-explainer/badge.png', condition: p => p.modeCorrect.build >= 10 },
+      { id: 'logical-thinking', name: '筋道名人', description: '合計25問せいかいする', image: 'https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/badges/math/logical-thinking/badge.png', condition: p => p.totalCorrect >= 25 },
+      { id: 'streak', name: '連続チャレンジ', description: '5問連続でせいかいする', image: 'https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/badges/common/streak/badge.png', condition: p => p.maxStreak >= 5 },
+      { id: 'perfect', name: 'パーフェクト', description: '1つのコース15問を全問正解', image: 'https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/badges/common/perfect/badge.png', condition: p => p.perfectRounds >= 1 },
+      { id: 'mission-complete', name: 'ミッション達成', description: '3つのコースをすべて体験する', image: 'https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/badges/common/mission-complete/badge.png', condition: p => p.attemptedModes.length >= 3 }
+    ];
+    const defaultProgress = {
+      totalCorrect: 0, totalAnswered: 0, score: 0, streak: 0, maxStreak: 0,
+      modeCorrect: { value: 0, reading: 0, build: 0 },
+      modeAnswered: { value: 0, reading: 0, build: 0 },
+      attemptedModes: [], perfectRounds: 0, unlockedBadges: [], updatedAt: null
+    };
+    function loadProgress() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+        if (!raw) return structuredClone(defaultProgress);
+        return {
+          ...structuredClone(defaultProgress), ...raw,
+          modeCorrect: { ...defaultProgress.modeCorrect, ...(raw.modeCorrect || {}) },
+          modeAnswered: { ...defaultProgress.modeAnswered, ...(raw.modeAnswered || {}) },
+          attemptedModes: Array.isArray(raw.attemptedModes) ? raw.attemptedModes : [],
+          unlockedBadges: Array.isArray(raw.unlockedBadges) ? raw.unlockedBadges : []
+        };
+      } catch (error) {
+        return structuredClone(defaultProgress);
+      }
     }
-
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    let progress = loadProgress();
+    let state = {
+      screen: 'home', returnScreen: 'home', mode: null, pool: [], index: 0, input: '',
+      feedback: null, feedbackType: '', solved: false, roundCorrect: 0, roundAnswered: 0,
+      naviIndex: Math.floor(Math.random() * navis.length), naviMood: 'study', newBadge: null
+    };
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+    function saveProgress() {
+      progress.updatedAt = new Date().toISOString();
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); } catch (error) {}
+    }
+    function shuffle(list) {
+      const next = [...list];
+      for (let i = next.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [next[i], next[j]] = [next[j], next[i]];
+      }
+      return next;
+    }
+    function normalizeBasic(str) {
+      return String(str).replace(/\s+/g, '').replace(/＝/g, '=').replace(/÷/g, '/').replace(/×/g, '*');
+    }
+    function canonicalSide(side) {
+      return String(side).split('+').map(s => s.trim()).filter(Boolean).sort().join('+');
+    }
+    function canonicalExpression(str) {
+      const normalized = normalizeBasic(str);
+      const [left, right] = normalized.split('=');
+      if (right === undefined) return canonicalSide(normalized);
+      return [canonicalSide(left), canonicalSide(right)].sort().join('=');
+    }
+    function esc(value) {
+      return String(value).replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
+    }
+    function levelInfo() {
+      const level = Math.min(100, Math.floor(progress.score / 100) + 1);
+      const current = progress.score % 100;
+      return { level, current, next: 100 - current };
+    }
+    function imageFor(navi, mood) {
+      if (mood === 'home') return GROUP_STUDYING;
+      const filename = mood === 'study' ? 'hint.webp' : mood === 'correct' ? 'correct.webp' : mood === 'retry' ? 'retry.webp' : 'complete.webp';
+      return NAVI_BASE + 'characters/' + navi.id + '/fullbody/' + filename;
+    }
+    function naviView(mood = state.naviMood) {
+      const navi = navis[state.naviIndex];
+      return {
+        navi,
+        image: imageFor(navi, mood),
+        line: naviLines[mood][state.naviIndex]
+      };
+    }
+    function checkBadges() {
+      const newly = [];
+      badges.forEach(badge => {
+        if (!progress.unlockedBadges.includes(badge.id) && badge.condition(progress)) {
+          progress.unlockedBadges.push(badge.id);
+          newly.push(badge);
+        }
+      });
+      if (newly.length) state.newBadge = newly[newly.length - 1];
+      saveProgress();
+    }
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+    function renderHeader() {
+      const info = levelInfo();
+      return '<header class="topbar">' +
+        '<div class="brand"><div class="brand-mark" aria-hidden="true">x</div><div><h1>文字式パーク</h1><p>小学校6年・文字と式を使って考える</p></div></div>' +
+        '<div class="top-actions">' +
+        '<div class="stat-pill"><strong>Lv.' + info.level + '</strong> あと' + info.next + 'pt</div>' +
+        '<div class="stat-pill">せいかい <strong>' + progress.totalCorrect + '</strong></div>' +
+        '<button class="outline-btn" data-action="badges" aria-label="バッジコレクションを開く">🏅 ' + progress.unlockedBadges.length + '/' + badges.length + '</button>' +
+        '</div></header>';
+    }
+    function renderNaviPanel(mood) {
+      const view = naviView(mood);
+      return '<aside class="navi-panel" aria-label="ナビキャラからのメッセージ">' +
+        '<p class="navi-kicker">TODAY\\'S NAVI</p>' +
+        '<img src="' + view.image + '" alt="' + esc(view.navi.name) + 'のイラスト" />' +
+        '<p class="navi-name">' + esc(view.navi.name) + ' <span style="font-size:11px;color:#64748b;">｜' + esc(view.navi.role) + '</span></p>' +
+        '<p class="navi-line">' + esc(view.line) + '</p>' +
+        '</aside>';
+    }
+    function renderHome() {
+      const info = levelInfo();
+      const navi = naviView('home');
+      const unlocked = progress.unlockedBadges.length;
+      const preview = badges.slice(0, 6).map(renderBadgeCard).join('');
+      return '<div class="main-card"><main class="home-wrap">' +
+        '<section class="hero">' +
+          '<div><p class="eyebrow">算数・文字と式</p><h2>文字式を、<span>使える力</span>に。</h2>' +
+          '<p class="hero-copy">「何がxか」を見つけ、言葉を式にし、式の意味を読む。3つのコースで、文字と式の考え方を身につけよう。</p>' +
+          '<div class="hero-progress"><div class="progress-label"><span>文字式レベル ' + info.level + '</span><span>' + info.current + ' / 100 pt</span></div><div class="progress-track"><div class="progress-fill" style="width:' + info.current + '%"></div></div></div></div>' +
+          '<div class="hero-navi"><img src="' + navi.image + '" alt="ナビチームが学習を応援しているイラスト" /><div class="navi-caption">いっしょに考えよう！</div></div>' +
+        '</section>' +
+        '<div class="section-heading"><div><h3>どのコースにする？</h3><p>1コース15問。自分の伸ばしたい力を選ぼう。</p></div><span class="stat-pill">連続正解 ' + progress.streak + '問</span></div>' +
+        '<section class="mode-grid">' + Object.entries(modes).map(([id, mode], i) =>
+          '<button class="mode-card" data-mode="' + id + '" style="--card-accent:' + mode.accent + ';--card-accent-strong:' + mode.accentStrong + '">' +
+          '<span class="mode-number">0' + (i + 1) + '</span><h4>' + mode.label + '</h4><p>' + mode.description + '</p>' +
+          '<div class="mode-meta"><span>15問チャレンジ</span><span>せいかい ' + progress.modeCorrect[id] + '</span></div></button>'
+        ).join('') + '</section>' +
+        '<section class="collection-panel"><div class="section-heading" style="margin:0 0 12px;"><div><h3>バッジコレクション</h3><p>学び方の工夫や挑戦の積み重ねも、宝物として残ります。</p></div><button class="ghost-btn" data-action="badges">すべて見る →</button></div>' +
+        '<div class="collection-grid">' + preview + '</div></section>' +
+        '</main></div>';
+    }
+    function renderBadgeCard(badge) {
+      const unlocked = progress.unlockedBadges.includes(badge.id);
+      return '<div class="badge-card ' + (unlocked ? '' : 'locked') + '" title="' + esc(unlocked ? badge.description : 'まだロック中') + '">' +
+        '<img src="' + badge.image + '" alt="" loading="lazy" /><strong>' + esc(unlocked ? badge.name : '？？？') + '</strong><small>' + (unlocked ? 'GET!' : 'ロック中') + '</small></div>';
+    }
+    function renderStudy() {
+      const mode = modes[state.mode];
+      const current = state.pool[state.index];
+      if (!current) return renderComplete();
+      const navi = naviView(state.naviMood);
+      const progressPercent = Math.round((state.index / state.pool.length) * 100);
+      let answerHtml = '';
+      if (state.mode === 'reading') {
+        answerHtml = '<div class="choice-list">' + current.choices.map(choice =>
+          '<button class="choice ' + (state.input === choice ? 'selected' : '') + '" data-choice="' + esc(choice) + '">' + esc(choice) + '</button>'
+        ).join('') + '</div>';
+      } else {
+        answerHtml = '<input id="answerInput" class="answer-input" type="text" inputmode="text" autocomplete="off" value="' + esc(state.input) + '" placeholder="' + (state.mode === 'build' ? '例：y = 80 × x' : '答えを入力') + '" aria-label="答えを入力" />' +
+          '<div class="palette-wrap">' + Object.entries(paletteGroups).map(([title, keys]) =>
+            '<div class="palette-group"><h5>' + title + '</h5><div class="palette">' + keys.map(key =>
+              '<button class="key" data-key="' + esc(key) + '">' + esc(key) + '</button>'
+            ).join('') + '</div></div>'
+          ).join('') + '</div>';
+      }
+      const feedback = state.feedback ? '<div class="feedback ' + state.feedbackType + '" role="status"><span class="feedback-icon">' + (state.feedbackType === 'good' ? '◎' : '△') + '</span><span>' + esc(state.feedback) + '</span></div>' : '';
+      return '<div class="main-card"><main class="study-card">' +
+        '<div class="study-head"><div class="study-title"><button class="ghost-btn" data-action="home">← ホーム</button><span class="mode-chip">' + esc(mode.short) + '｜' + esc(mode.label) + '</span></div><span class="question-count">問題 ' + (state.index + 1) + ' / ' + state.pool.length + '</span></div>' +
+        '<div class="study-grid"><section class="question-panel"><div class="question-progress" aria-label="問題の進み具合"><span style="width:' + progressPercent + '%"></span></div>' +
+        '<div class="question-box"><p class="question-label">QUESTION ' + String(state.index + 1).padStart(2, '0') + '</p><p class="question-text">' + esc(current.text) + '</p><p class="answer-title">こたえ</p>' + answerHtml +
+        '<div class="answer-actions"><button class="primary-btn cyan" data-action="check" ' + (state.solved ? 'disabled' : '') + '>こたえあわせ</button><button class="primary-btn" data-action="next">' + (state.index === state.pool.length - 1 ? 'コースを終える' : 'つぎの問題') + '</button></div>' + feedback + '</div>' +
+        '<p class="study-footnote">Enterキーでもこたえあわせできます。まちがえても、何度でも考え直せます。</p></section>' +
+        renderNaviPanel(state.naviMood) + '</div></main></div>';
+    }
+    function renderBadges() {
+      const unlocked = progress.unlockedBadges.length;
+      return '<div class="main-card"><main class="badges-page"><div class="badges-page-head"><div><button class="ghost-btn" data-action="back">← もどる</button><h2>バッジコレクション</h2><p>' + unlocked + ' / ' + badges.length + ' 個ゲット。学びの足あとを見てみよう。</p></div><div class="stat-pill">最高連続 ' + progress.maxStreak + '問</div></div>' +
+        '<section class="badge-large-grid">' + badges.map(badge => {
+          const got = progress.unlockedBadges.includes(badge.id);
+          return '<article class="badge-large ' + (got ? '' : 'locked') + '"><img src="' + badge.image + '" alt="" /><div><h3>' + esc(got ? badge.name : '？？？') + '</h3><p>' + esc(badge.description) + '</p><span class="badge-status">' + (got ? 'GET! 学びの記録に追加' : '条件に挑戦中') + '</span></div></article>';
+        }).join('') + '</section></main></div>';
+    }
+    function renderComplete() {
+      const mode = modes[state.mode];
+      const view = naviView('complete');
+      return '<div class="main-card"><main class="complete-page"><img src="' + view.image + '" alt="' + esc(view.navi.name) + 'のお祝いイラスト" /><p class="eyebrow" style="color:var(--blue);margin:0;">COURSE COMPLETE</p><h2>' + esc(mode.label) + ' おつかれさま！</h2><p>最後まで取り組んだことが、いちばんの学びです。</p>' +
+        '<div class="complete-stats"><div class="complete-stat"><strong>' + state.roundCorrect + '</strong><span>せいかい</span></div><div class="complete-stat"><strong>' + state.roundAnswered + '</strong><span>回答数</span></div><div class="complete-stat"><strong>+' + (state.roundCorrect * 10) + '</strong><span>今回のpt</span></div></div>' +
+        '<div class="complete-actions"><button class="primary-btn" data-action="home">ホームへ</button><button class="outline-btn" data-action="retry">もう一度挑戦</button><button class="outline-btn" data-action="badges">バッジを見る</button></div></main></div>';
+    }
+    function render() {
+      const app = document.getElementById('app');
+      let body = state.screen === 'home' ? renderHome() : state.screen === 'study' ? renderStudy() : state.screen === 'complete' ? renderComplete() : renderBadges();
+      app.innerHTML = '<div class="app-shell">' + renderHeader() + body + '</div>';
+      bindEvents();
+      if (state.screen === 'study' && state.mode !== 'reading') {
+        const input = document.getElementById('answerInput');
+        if (input) { input.focus(); input.setSelectionRange(input.value.length, input.value.length); }
+      }
+    }
+    function startMode(modeId) {
+      state = { ...state, screen: 'study', returnScreen: 'home', mode: modeId, pool: shuffle(modes[modeId].pool), index: 0, input: '', feedback: null, feedbackType: '', solved: false, roundCorrect: 0, roundAnswered: 0, naviIndex: Math.floor(Math.random() * navis.length), naviMood: 'study', newBadge: null };
+      if (!progress.attemptedModes.includes(modeId)) progress.attemptedModes.push(modeId);
+      checkBadges();
+      render();
+    }
+    function setInput(value) {
+      state.input = value;
+      const input = document.getElementById('answerInput');
+      if (input && input.value !== value) input.value = value;
+    }
+    function checkAnswer() {
+      const current = state.pool[state.index];
+      if (!current || state.solved) return;
+      if (!state.input.trim()) {
+        state.feedback = 'まずは答えを入力してみよう。';
+        state.feedbackType = 'try';
+        state.naviMood = 'retry';
+        render();
+        return;
+      }
+      progress.totalAnswered += 1;
+      progress.modeAnswered[state.mode] += 1;
+      let ok = false;
+      if (state.mode === 'value') ok = normalizeBasic(state.input) === normalizeBasic(current.answer);
+      if (state.mode === 'reading') ok = state.input === current.answer;
+      if (state.mode === 'build') ok = canonicalExpression(state.input) === canonicalExpression(current.answer);
+      if (ok) {
+        state.solved = true;
+        state.roundCorrect += 1;
+        state.roundAnswered += 1;
+        progress.totalCorrect += 1;
+        progress.modeCorrect[state.mode] += 1;
+        progress.score += 10;
+        progress.streak += 1;
+        progress.maxStreak = Math.max(progress.maxStreak, progress.streak);
+        state.feedback = 'せいかい！ ' + current.note;
+        state.feedbackType = 'good';
+        state.naviMood = 'correct';
+        checkBadges();
+        saveProgress();
+        render();
+        showToast('🎉 せいかい！ +10pt');
+      } else {
+        state.roundAnswered += 1;
+        progress.streak = 0;
+        state.feedback = 'もう一度！ 正解は「' + current.answer + '」です。 ' + current.note;
+        state.feedbackType = 'try';
+        state.naviMood = 'retry';
+        saveProgress();
+        render();
+      }
+    }
+    function nextQuestion() {
+      if (!state.solved) {
+        state.feedback = 'まず「こたえあわせ」をしてから、つぎへ進もう。';
+        state.feedbackType = 'try';
+        state.naviMood = 'retry';
+        render();
+        return;
+      }
+      if (state.index >= state.pool.length - 1) {
+        if (state.roundCorrect === state.pool.length) {
+          progress.perfectRounds += 1;
+          checkBadges();
+        }
+        state.screen = 'complete';
+        state.naviMood = 'complete';
+        render();
+        return;
+      }
+      state.index += 1;
+      state.input = '';
+      state.feedback = null;
+      state.feedbackType = '';
+      state.solved = false;
+      state.naviIndex = Math.floor(Math.random() * navis.length);
+      state.naviMood = 'study';
+      render();
+    }
+    function backHome() {
+      state.screen = 'home';
+      state.naviMood = 'study';
+      render();
+    }
+    function openBadges() {
+      state.returnScreen = state.screen;
+      state.screen = 'badges';
+      render();
+    }
+    function retryMode() {
+      startMode(state.mode);
+    }
+    function onKey(key) {
+      if (key === '←') setInput(state.input.slice(0, -1));
+      else if (key === 'クリア') setInput('');
+      else setInput(state.input + key);
+    }
+    function bindEvents() {
+      document.querySelectorAll('[data-mode]').forEach(button => button.addEventListener('click', () => startMode(button.dataset.mode)));
+      document.querySelectorAll('[data-action]').forEach(button => button.addEventListener('click', () => {
+        const action = button.dataset.action;
+        if (action === 'home') backHome();
+        if (action === 'back') { state.screen = state.returnScreen || 'home'; render(); }
+        if (action === 'badges') openBadges();
+        if (action === 'check') checkAnswer();
+        if (action === 'next') nextQuestion();
+        if (action === 'retry') retryMode();
+      }));
+      document.querySelectorAll('[data-choice]').forEach(button => button.addEventListener('click', () => {
+        if (!state.solved) { state.input = button.dataset.choice; render(); }
+      }));
+      document.querySelectorAll('[data-key]').forEach(button => button.addEventListener('click', () => {
+        if (!state.solved) onKey(button.dataset.key);
+      }));
+      const input = document.getElementById('answerInput');
+      if (input) {
+        input.addEventListener('input', event => { state.input = event.target.value; });
+        input.addEventListener('keydown', event => { if (event.key === 'Enter') checkAnswer(); });
+      }
+    }
+    render();
   </script>
 </body>
 </html>
